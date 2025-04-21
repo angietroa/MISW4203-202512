@@ -1,58 +1,55 @@
 package com.uniandes.vinilos.ui.components
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
+import com.uniandes.vinilos.R
 
 @Composable
-fun SectionHeader(
-    title: String,
+fun LogoHeader(
     route: String,
     navController: NavHostController,
-    isList: Boolean = false,
 ) {
-    Row(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
-            color = MaterialTheme.colorScheme.primary
-        )
+        Spacer(modifier = Modifier.height(18.dp))
 
-        val (buttonText, buttonColors) = getButtonConfig(isList)
-
-        Button(
-            onClick = { navController.navigate(route) },
-            colors = buttonColors,
-            border = BorderStroke(1.dp, buttonColors.containerColor),
-            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 0.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
         ) {
-            Text(text = buttonText)
+            IconButton(
+                onClick = { navController.navigate(route) },
+                modifier = Modifier.align(Alignment.CenterStart)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Atrás",
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier
+                        .size(24.dp)
+                )
+            }
+
+            Image(
+                painter = painterResource(id = R.drawable.long_logo),
+                contentDescription = "Logo de la app",
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .height(48.dp)
+            )
         }
     }
-    Spacer(modifier = Modifier.height(18.dp))
 }
 
-@Composable
-fun getButtonConfig(isList: Boolean): Pair<String, ButtonColors> {
-    val buttonText = if (isList) "Crear" else "Ver más"
-    val containerColor = if (isList) Color(0xFF059BFF).copy(alpha = 0.4f) else Color.Transparent
-    val contentColor = if (isList) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondary
-
-    val buttonColors = ButtonDefaults.buttonColors(
-        containerColor = containerColor,
-        contentColor = contentColor
-    )
-
-    return buttonText to buttonColors
-}

@@ -2,7 +2,6 @@ package com.uniandes.vinilos.ui.components
 
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,65 +18,70 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
-fun GradientCard(
-    image: Painter,
-    title: String,
-    subtitle: String,
-    onAddClick: () -> Unit
+fun MainCollector(
+    cover: String,
+    name: String,
+    albumCount: String,
+    onClick: () -> Unit,
 ) {
-    val painter = rememberAsyncImagePainter(model = image)
+    val painter = rememberAsyncImagePainter(model = cover)
+
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(360.dp),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(8.dp)
     ) {
-        Box {
-            Image(
-                painter = painter,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-
+        Column {
             Box(
                 modifier = Modifier
-                    .matchParentSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Black.copy(alpha = 1f),
-                                Color.Black.copy(alpha = 0f)
-                            ),
-                            startY = 0f,
-                            endY = 360f * 0.5f
+                    .fillMaxWidth()
+                    .height(180.dp)
+            ) {
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colorStops = arrayOf(
+                                    0.5f to Color.Black.copy(alpha = 0f),
+                                    1.0f to Color.Black.copy(alpha = 1f)
+                                )
+                            )
                         )
-                    )
-            )
+                )
+            }
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomStart)
-                    .padding(16.dp),
+                    .background(Color.Black)
+                    .padding(4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
                     Text(
-                        text = title,
+                        text = albumCount,
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 14.sp),
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.secondary
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = subtitle,
+                        text = name,
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
                         color = MaterialTheme.colorScheme.tertiary
                     )
                 }
+
                 Button(
-                    onClick = onAddClick,
+                    onClick = { onClick() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF059BFF).copy(alpha = 0.4f),
                         contentColor = MaterialTheme.colorScheme.tertiary
@@ -91,3 +95,4 @@ fun GradientCard(
         }
     }
 }
+
