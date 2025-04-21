@@ -1,1 +1,8 @@
+# Android / Kotlin defaults
+.gradle/
 /build
+.idea/
+*.iml
+*.bin
+*.lock
+local.properties
