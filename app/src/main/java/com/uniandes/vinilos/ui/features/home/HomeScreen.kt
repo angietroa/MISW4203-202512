@@ -1,25 +1,128 @@
 package com.uniandes.vinilos.ui.features.home
 
+import com.uniandes.vinilos.data.model.Album
+import com.uniandes.vinilos.data.model.Artist
+import com.uniandes.vinilos.ui.components.MainAlbum
+import com.uniandes.vinilos.ui.components.MainArtist
+import com.uniandes.vinilos.ui.components.SectionHeader
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import com.uniandes.vinilos.R
+import androidx.navigation.NavHostController
 
 @Composable
-fun HomeScreen() {
-    Box(
+fun HomeScreen(navController: NavHostController) {
+    val albums = listOf(
+        Album(
+            id = "1",
+            cover = "https://i.scdn.co/image/ab67616d0000b273c05fd08ca89f68bdfef5a21e",
+            name = "Trece",
+            artist = "Andrés Cepeda"
+        ),
+        Album(
+            id = "2",
+            cover = "https://i.scdn.co/image/ab67616d0000b2739164bafe9aaa168d93f4816a",
+            name = "Parachutes",
+            artist = "Coldplay"
+        ),
+        Album(
+            id = "3",
+            cover = "https://i.scdn.co/image/ab67616d0000b273442b53773d50e1b5369bb16c",
+            name = "V",
+            artist = "Maroon 5"
+        )
+    )
+
+    val artists = listOf(
+        Artist(
+            id = "1",
+            cover = "https://radionacional-v3.s3.amazonaws.com/s3fs-public/styles/portadas_relaciona_4_3/public/senalradio/articulo-noticia/galeriaimagen/lospetitfellas_2020_5.jpg?h=34515be3&itok=kwWtG-VK",
+            name = "Los Petit Fellas",
+        ),
+        Artist(
+            id = "2",
+            cover = "https://s2.abcstatics.com/abc/www/multimedia/gente/2024/01/17/ariana-grande-kVxG-U601140978351bzB-1200x840@abc.jpg",
+            name = "Ariana Grande",
+        ),
+        Artist(
+            id = "3",
+            cover = "https://i.scdn.co/image/ab6761610000e5eb330d24db775125dcec2c7b4c",
+            name = "Juanes"
+        )
+    )
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.Center
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 16.dp)
     ) {
-        Text(
-            text = "Hola Mundo",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.primary
-        )
+        Spacer(modifier = Modifier.height(18.dp))
+
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.long_logo),
+                contentDescription = "Logo de la app",
+                modifier = Modifier.height(48.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+        SectionHeader(title = "Álbumes", route = "album_screen", navController = navController)
+
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(albums) { album ->
+                    MainAlbum(
+                        cover = album.cover,
+                        title = album.name,
+                        subtitle = album.artist,
+                        onClick = {
+                            navController.navigate("album_detail/${album.id}?origin=home_screen")
+                        }
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(36.dp))
+        SectionHeader(title = "Artistas", route = "artist_screen", navController = navController)
+
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(artists) { artist ->
+                    MainArtist(
+                        cover = artist.cover,
+                        title = artist.name,
+                        onClick = {
+                            navController.navigate("artist_detail/${artist.id}?origin=home_screen")
+                        }
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(36.dp))
+        SectionHeader(title = "Coleccionistas", route = "collector_screen", navController = navController)
     }
 }
