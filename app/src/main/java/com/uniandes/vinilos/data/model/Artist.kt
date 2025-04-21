@@ -1,8 +1,7 @@
 package com.uniandes.vinilos.data.model
 
-data class Album(
+data class Artist(
     val id: String,
     val cover: String,
     val name: String,
-    val artist: String
 )
