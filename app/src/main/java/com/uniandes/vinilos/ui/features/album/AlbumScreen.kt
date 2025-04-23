@@ -4,69 +4,35 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.uniandes.vinilos.data.model.Album
 import com.uniandes.vinilos.ui.components.LogoHeader
 import com.uniandes.vinilos.ui.components.SecondaryAlbum
 import com.uniandes.vinilos.ui.components.SectionHeader
+import com.uniandes.vinilos.viewmodel.AlbumViewModel
 
 @Composable
-fun AlbumScreen(navController: NavHostController) {
-    val albums = listOf(
-        Album(
-            id = "1",
-            cover = "https://wallpapers.com/images/hd/neon-purple-4k-z32z5va3r8itqjvq.jpg",
-            name = "Un album",
-            artist = "Andres Cepeda"
-        ),
-        Album(
-            id = "2",
-            cover = "https://wallpapers.com/images/hd/neon-purple-4k-z32z5va3r8itqjvq.jpg",
-            name = "Otro album",
-            artist = "Otro artista"
-        ),
-        Album(
-            id = "2",
-            cover = "https://wallpapers.com/images/hd/neon-purple-4k-z32z5va3r8itqjvq.jpg",
-            name = "Otro album",
-            artist = "Otro artista"
-        ),
-        Album(
-            id = "2",
-            cover = "https://wallpapers.com/images/hd/neon-purple-4k-z32z5va3r8itqjvq.jpg",
-            name = "Otro album",
-            artist = "Otro artista"
-        ),
-        Album(
-            id = "2",
-            cover = "https://wallpapers.com/images/hd/neon-purple-4k-z32z5va3r8itqjvq.jpg",
-            name = "Otro album",
-            artist = "Otro artista"
-        ),
-        Album(
-            id = "2",
-            cover = "https://wallpapers.com/images/hd/neon-purple-4k-z32z5va3r8itqjvq.jpg",
-            name = "Otro album",
-            artist = "Otro artista"
-        ),
-        Album(
-            id = "2",
-            cover = "https://wallpapers.com/images/hd/neon-purple-4k-z32z5va3r8itqjvq.jpg",
-            name = "Otro album",
-            artist = "Otro artista"
-        ),
-        Album(
-            id = "2",
-            cover = "https://wallpapers.com/images/hd/neon-purple-4k-z32z5va3r8itqjvq.jpg",
-            name = "Ultimo album",
-            artist = "Otro artista"
-        )
-    )
+fun AlbumScreen(
+    navController: NavHostController,
+    albumViewModel: AlbumViewModel = viewModel()
+) {
+    // Obtenemos el estado desde el ViewModel
+    val albumState by albumViewModel.albumState.collectAsState()
+
+    // Cargamos los álbumes cuando se inicia la pantalla
+    LaunchedEffect(key1 = true) {
+        albumViewModel.loadAlbums()
+    }
 
     Column(
         modifier = Modifier
@@ -89,24 +55,41 @@ fun AlbumScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(18.dp))
 
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             contentAlignment = Alignment.Center
         ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(albums) { album ->
-                    SecondaryAlbum(
-                        title = album.name,
-                        subtitle = album.artist,
-                        cover = album.cover,
-                        onClick = {
-                            navController.navigate("album_detail/${album.id}?origin=album_screen")
-                        }
+            when {
+                albumState.isLoading -> {
+                    CircularProgressIndicator()
+                }
+                albumState.error != null -> {
+                    Text(
+                        text = "Error: ${albumState.error}",
+                        color = MaterialTheme.colorScheme.error
                     )
+                }
+                albumState.albums.isNotEmpty() -> {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(albumState.albums) { album ->
+                            SecondaryAlbum(
+                                title = album.name,
+                                subtitle = "",
+                                cover = album.cover,
+                                onClick = {
+                                    navController.navigate("album_detail/${album.id}?origin=album_screen")
+                                }
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    Text(text = "No hay álbumes disponibles")
                 }
             }
         }
     }
 }
-

@@ -4,5 +4,7 @@ data class Album(
     val id: String,
     val cover: String,
     val name: String,
-    val artist: String
+    val performers: List<Artist> = emptyList(),
+    // NOTE: Remove!
+    var artist: String
 )
