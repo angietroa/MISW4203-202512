@@ -16,22 +16,25 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import com.uniandes.vinilos.ui.components.LogoHeader
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.uniandes.vinilos.data.model.Album
@@ -39,70 +42,46 @@ import com.uniandes.vinilos.data.model.Artist
 import com.uniandes.vinilos.data.model.Comment
 import com.uniandes.vinilos.data.model.Track
 import com.uniandes.vinilos.ui.components.DetailField
-import com.uniandes.vinilos.ui.components.FormButtons
+import com.uniandes.vinilos.viewmodel.AlbumViewModel
 import java.time.Instant
 import java.time.ZoneOffset
 
 @SuppressLint("NewApi")
 @Composable
 fun AlbumDetail(albumId: String, origin: String, navController: NavHostController) {
-    val album = Album(
-        id = "1",
-        cover = "https://i.scdn.co/image/ab67616d0000b273c05fd08ca89f68bdfef5a21e",
-        name = "Trece",
-        artist = "Andrés Cepeda",
-        performers = listOf(
-            Artist(
-                id = "1",
-                name = "Andres Cepeda",
-                image = "https://i.scdn.co/image/ab67616d0000b273c05fd08ca89f68bdfef5a21e"
-            ),
-            Artist(
-                id = "1",
-                name = "Otro",
-                image = "https://i.scdn.co/image/ab67616d0000b273c05fd08ca89f68bdfef5a21e"
-            )
-        ),
-        releaseDate = "2025-08-01T00:00:00.000Z",
-        description = "Trece es el octavo álbum de estudio del cantante colombiano Andrés Cepeda. El álbum se caracteriza por una variedad de ritmos, entre el pop, urbano, tropipop, country, mariachi y rock.",
-        genre = "Pop latino",
-        recordLabel = "Sony Music",
-        tracks = listOf(
-            Track(
-                id = 1,
-                name = "Magia",
-                duration = "3:30"
-            ),
-            Track(
-                id = 2,
-                name = "Te voy a amar",
-                duration = "3:30"
-            ),
-            Track(
-                id = 3,
-                name = "Infinito",
-                duration = "3:30"
-            )
-        ),
-        comments = listOf(
-            Comment(
-                id = 1,
-                description = "Un comentario",
-                rating = 5
-            ),
-            Comment(
-                id = 2,
-                description = "Otro comentario",
-                rating = 4
-            )
-        )
-    )
+    val viewModel: AlbumViewModel = viewModel()
 
+    LaunchedEffect(albumId) {
+        viewModel.loadAlbumById(albumId.toInt())
+    }
+
+    val selectedAlbumState = viewModel.selectedAlbumState.collectAsState().value
+
+
+    when {
+        selectedAlbumState.isLoading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        selectedAlbumState.error != null -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Error: ${selectedAlbumState.error}")
+            }
+        }
+        selectedAlbumState.album != null -> {
+            AlbumDetailContent(album = selectedAlbumState.album, origin = origin, navController = navController)
+        }
+    }
+}
+
+@Composable
+fun AlbumDetailContent(album: Album, origin: String, navController: NavHostController) {
     val painter = rememberAsyncImagePainter(model = album.cover)
     val releaseYear = Instant.parse(album.releaseDate).atZone(ZoneOffset.UTC).year.toString()
-    val performers = album.performers.map { performer -> performer.name }.joinToString(", ")
-    val tracks = album.tracks.map { track -> track.name }.joinToString(", ")
-    val comments = album.comments.map { comment -> comment.description }.joinToString(" - ")
+    val performers = album.performers.joinToString(", ") { it.name }
+    val tracks = album.tracks.joinToString(", ") { it.name }
+    val comments = album.comments.joinToString(" - ") { it.description }
 
     Box(
         modifier = Modifier
@@ -110,12 +89,16 @@ fun AlbumDetail(albumId: String, origin: String, navController: NavHostControlle
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
     ) {
-        Column {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 16.dp)
+        ) {
             LogoHeader(origin, navController = navController)
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Row (
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
@@ -129,7 +112,7 @@ fun AlbumDetail(albumId: String, origin: String, navController: NavHostControlle
 
                 Spacer(modifier = Modifier.width(13.dp))
 
-                Column (
+                Column(
                     modifier = Modifier
                         .padding(16.dp),
                     horizontalAlignment = Alignment.Start,
@@ -159,7 +142,9 @@ fun AlbumDetail(albumId: String, origin: String, navController: NavHostControlle
                         ),
                         border = BorderStroke(1.dp, Color(0xFF059BFF).copy(alpha = 0.4f)),
                         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 0.dp),
-                        modifier = Modifier.width(250.dp).height(30.dp),
+                        modifier = Modifier
+                            .width(250.dp)
+                            .height(30.dp),
                     ) {
                         Text(
                             text = "Agregar",
@@ -172,8 +157,8 @@ fun AlbumDetail(albumId: String, origin: String, navController: NavHostControlle
             Spacer(modifier = Modifier.height(20.dp))
 
             DetailField("Año de lanzamiento", releaseYear)
-            DetailField("Género",  album.genre)
-            DetailField("Sello discografico", album.recordLabel)
+            DetailField("Género", album.genre)
+            DetailField("Sello discográfico", album.recordLabel)
             DetailField("Canciones", tracks)
             DetailField("Descripción", album.description)
             DetailField("Comentarios", comments)

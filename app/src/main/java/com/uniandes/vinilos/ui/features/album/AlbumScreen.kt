@@ -26,10 +26,8 @@ fun AlbumScreen(
     navController: NavHostController,
     albumViewModel: AlbumViewModel = viewModel()
 ) {
-    // Obtenemos el estado desde el ViewModel
     val albumState by albumViewModel.albumState.collectAsState()
 
-    // Cargamos los álbumes cuando se inicia la pantalla
     LaunchedEffect(key1 = true) {
         albumViewModel.loadAlbums()
     }
