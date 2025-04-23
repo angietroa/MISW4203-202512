@@ -79,7 +79,7 @@ fun AlbumScreen(
                                 title = album.name,
                                 subtitle = album.performers
                                     .map { performer -> performer.name }
-                                    .joinToString(" ,"),
+                                    .joinToString(", "),
                                 cover = album.cover,
                                 onClick = {
                                     navController.navigate("album_detail/${album.id}?origin=album_screen")
