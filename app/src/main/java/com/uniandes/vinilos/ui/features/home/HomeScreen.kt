@@ -1,10 +1,5 @@
 package com.uniandes.vinilos.ui.features.home
 
-import com.uniandes.vinilos.data.model.Album
-import com.uniandes.vinilos.data.model.Artist
-import com.uniandes.vinilos.ui.components.MainAlbum
-import com.uniandes.vinilos.ui.components.MainArtist
-import com.uniandes.vinilos.ui.components.SectionHeader
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,35 +7,34 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.uniandes.vinilos.R
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.uniandes.vinilos.R
+import com.uniandes.vinilos.data.model.Artist
+import com.uniandes.vinilos.ui.components.MainAlbum
+import com.uniandes.vinilos.ui.components.MainArtist
+import com.uniandes.vinilos.ui.components.SectionHeader
+import com.uniandes.vinilos.viewmodel.AlbumViewModel
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
-    val albums = listOf(
-        Album(
-            id = "1",
-            cover = "https://i.scdn.co/image/ab67616d0000b273c05fd08ca89f68bdfef5a21e",
-            name = "Trece",
-            artist = "Andrés Cepeda"
-        ),
-        Album(
-            id = "2",
-            cover = "https://i.scdn.co/image/ab67616d0000b2739164bafe9aaa168d93f4816a",
-            name = "Parachutes",
-            artist = "Coldplay"
-        ),
-        Album(
-            id = "3",
-            cover = "https://i.scdn.co/image/ab67616d0000b273442b53773d50e1b5369bb16c",
-            name = "V",
-            artist = "Maroon 5"
-        )
-    )
+fun HomeScreen(
+    navController: NavHostController,
+    albumViewModel: AlbumViewModel = viewModel()
+) {
+    // Obtener el estado de álbumes desde el ViewModel
+    val albumState by albumViewModel.albumState.collectAsState()
+
+    // Cargar álbumes cuando se inicia la pantalla
+    LaunchedEffect(key1 = true) {
+        albumViewModel.loadAlbums()
+    }
 
     val artists = listOf(
         Artist(
@@ -86,18 +80,34 @@ fun HomeScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(albums) { album ->
-                    MainAlbum(
-                        cover = album.cover,
-                        title = album.name,
-                        subtitle = album.artist,
-                        onClick = {
-                            navController.navigate("album_detail/${album.id}?origin=home_screen")
-                        }
+            when {
+                albumState.isLoading -> {
+                    CircularProgressIndicator()
+                }
+                albumState.error != null -> {
+                    Text(
+                        text = "Error: ${albumState.error}",
+                        color = MaterialTheme.colorScheme.error
                     )
+                }
+                albumState.albums.isNotEmpty() -> {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(albumState.albums.take(3)) { album ->
+                            MainAlbum(
+                                cover = album.cover,
+                                title = album.name,
+                                subtitle = "",
+                                onClick = {
+                                    navController.navigate("album_detail/${album.id}?origin=home_screen")
+                                }
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    Text(text = "No hay álbumes disponibles")
                 }
             }
         }
