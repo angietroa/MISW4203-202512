@@ -45,17 +45,17 @@ fun HomeScreen(navController: NavHostController) {
     val artists = listOf(
         Artist(
             id = "1",
-            cover = "https://radionacional-v3.s3.amazonaws.com/s3fs-public/styles/portadas_relaciona_4_3/public/senalradio/articulo-noticia/galeriaimagen/lospetitfellas_2020_5.jpg?h=34515be3&itok=kwWtG-VK",
+            image = "https://radionacional-v3.s3.amazonaws.com/s3fs-public/styles/portadas_relaciona_4_3/public/senalradio/articulo-noticia/galeriaimagen/lospetitfellas_2020_5.jpg?h=34515be3&itok=kwWtG-VK",
             name = "Los Petit Fellas",
         ),
         Artist(
             id = "2",
-            cover = "https://s2.abcstatics.com/abc/www/multimedia/gente/2024/01/17/ariana-grande-kVxG-U601140978351bzB-1200x840@abc.jpg",
+            image = "https://s2.abcstatics.com/abc/www/multimedia/gente/2024/01/17/ariana-grande-kVxG-U601140978351bzB-1200x840@abc.jpg",
             name = "Ariana Grande",
         ),
         Artist(
             id = "3",
-            cover = "https://i.scdn.co/image/ab6761610000e5eb330d24db775125dcec2c7b4c",
+            image = "https://i.scdn.co/image/ab6761610000e5eb330d24db775125dcec2c7b4c",
             name = "Juanes"
         )
     )
@@ -113,7 +113,7 @@ fun HomeScreen(navController: NavHostController) {
             ) {
                 items(artists) { artist ->
                     MainArtist(
-                        cover = artist.cover,
+                        cover = artist.image,
                         title = artist.name,
                         onClick = {
                             navController.navigate("artist_detail/${artist.id}?origin=home_screen")
