@@ -41,7 +41,7 @@ fun AlbumScreen(
             .padding(horizontal = 16.dp)
     ) {
 
-        LogoHeader("album_screen", navController = navController)
+        LogoHeader("home_screen", navController = navController)
 
         Spacer(modifier = Modifier.height(32.dp))
 
