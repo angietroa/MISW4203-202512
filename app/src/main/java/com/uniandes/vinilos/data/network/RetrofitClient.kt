@@ -2,9 +2,10 @@ package com.uniandes.vinilos.data.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.uniandes.vinilos.BuildConfig
 
 object RetrofitClient {
-    private const val BASE_URL = "http://192.168.1.102:3000/"
+    private val BASE_URL = BuildConfig.BACKEND_BASE_URL
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
