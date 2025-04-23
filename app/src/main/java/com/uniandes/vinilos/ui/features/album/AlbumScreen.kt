@@ -58,7 +58,7 @@ fun AlbumScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.TopStart
         ) {
             when {
                 albumState.isLoading -> {
@@ -77,7 +77,9 @@ fun AlbumScreen(
                         items(albumState.albums) { album ->
                             SecondaryAlbum(
                                 title = album.name,
-                                subtitle = "",
+                                subtitle = album.performers
+                                    .map { performer -> performer.name }
+                                    .joinToString(" ,"),
                                 cover = album.cover,
                                 onClick = {
                                     navController.navigate("album_detail/${album.id}?origin=album_screen")
