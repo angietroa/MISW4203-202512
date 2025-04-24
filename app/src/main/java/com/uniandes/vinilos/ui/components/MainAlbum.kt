@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
@@ -24,14 +25,14 @@ fun MainAlbum(
     val painter = rememberAsyncImagePainter(model = cover)
 
     Column(
-        modifier = Modifier.clickable { onClick() },
+        modifier = Modifier.clickable { onClick() }.width(114.dp).height(164.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Image(
             painter = painter,
             contentDescription = null,
             modifier = Modifier
-                .size(114.dp),
+                .size(110.dp),
             contentScale = ContentScale.Crop
         )
 
@@ -41,14 +42,18 @@ fun MainAlbum(
             text = title,
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.secondary,
-            textAlign = TextAlign.Left
+            textAlign = TextAlign.Left,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
 
         Text(
             text = subtitle,
             fontSize = 10.sp,
             color = MaterialTheme.colorScheme.tertiary,
-            textAlign = TextAlign.Left
+            textAlign = TextAlign.Left,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

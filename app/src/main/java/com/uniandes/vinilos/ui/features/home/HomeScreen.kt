@@ -28,10 +28,8 @@ fun HomeScreen(
     navController: NavHostController,
     albumViewModel: AlbumViewModel = viewModel()
 ) {
-    // Obtener el estado de álbumes desde el ViewModel
     val albumState by albumViewModel.albumState.collectAsState()
 
-    // Cargar álbumes cuando se inicia la pantalla
     LaunchedEffect(key1 = true) {
         albumViewModel.loadAlbums()
     }
@@ -98,7 +96,7 @@ fun HomeScreen(
                             MainAlbum(
                                 cover = album.cover,
                                 title = album.name,
-                                subtitle = "",
+                                subtitle = album.performers.joinToString(", ") { it.name },
                                 onClick = {
                                     navController.navigate("album_detail/${album.id}?origin=home_screen")
                                 }
