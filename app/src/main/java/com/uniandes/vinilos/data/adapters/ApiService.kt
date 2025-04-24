@@ -1,4 +1,4 @@
-package com.uniandes.vinilos.data.network
+package com.uniandes.vinilos.data.adapters
 
 import com.uniandes.vinilos.data.model.Album
 import retrofit2.http.GET
