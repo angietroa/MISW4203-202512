@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -57,6 +58,7 @@ fun HomeScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
+            .testTag("home_screen")
     ) {
         Spacer(modifier = Modifier.height(18.dp))
 
@@ -72,7 +74,7 @@ fun HomeScreen(
         }
 
         Spacer(modifier = Modifier.height(32.dp))
-        SectionHeader(title = "Álbumes", route = "album_screen", navController = navController)
+        SectionHeader(title = "Álbumes", route = "album_screen", navController = navController, tag = "show_more_album")
 
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -90,10 +92,12 @@ fun HomeScreen(
                 }
                 albumState.albums.isNotEmpty() -> {
                     LazyRow(
+                        modifier = Modifier.testTag("album_list"),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(albumState.albums.take(3)) { album ->
                             MainAlbum(
+                                modifier = Modifier.testTag("album_item"),
                                 cover = album.cover,
                                 title = album.name,
                                 subtitle = album.performers.joinToString(", ") { it.name },
@@ -110,7 +114,7 @@ fun HomeScreen(
             }
         }
         Spacer(modifier = Modifier.height(36.dp))
-        SectionHeader(title = "Artistas", route = "artist_screen", navController = navController)
+        SectionHeader(title = "Artistas", route = "artist_screen", navController = navController, tag = "show_more_artist")
 
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -131,6 +135,6 @@ fun HomeScreen(
             }
         }
         Spacer(modifier = Modifier.height(36.dp))
-        SectionHeader(title = "Coleccionistas", route = "collector_screen", navController = navController)
+        SectionHeader(title = "Coleccionistas", route = "collector_screen", navController = navController, tag = "show_more_collector")
     }
 }

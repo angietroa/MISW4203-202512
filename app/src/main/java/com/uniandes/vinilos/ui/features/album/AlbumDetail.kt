@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,9 +39,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.uniandes.vinilos.data.model.Album
-import com.uniandes.vinilos.data.model.Artist
-import com.uniandes.vinilos.data.model.Comment
-import com.uniandes.vinilos.data.model.Track
 import com.uniandes.vinilos.ui.components.DetailField
 import com.uniandes.vinilos.viewmodel.AlbumViewModel
 import java.time.Instant
@@ -88,6 +86,7 @@ fun AlbumDetailContent(album: Album, origin: String, navController: NavHostContr
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
+            .testTag("album_detail")
     ) {
         Column(
             modifier = Modifier

@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 
 @Composable
@@ -16,6 +17,7 @@ fun SectionHeader(
     title: String,
     route: String,
     navController: NavHostController,
+    tag: String,
     isList: Boolean = false,
 ) {
     Row(
@@ -33,6 +35,7 @@ fun SectionHeader(
 
         Button(
             onClick = { navController.navigate(route) },
+            modifier = Modifier.testTag(tag),
             colors = buttonColors,
             border = BorderStroke(1.dp, buttonColors.containerColor),
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 0.dp)
