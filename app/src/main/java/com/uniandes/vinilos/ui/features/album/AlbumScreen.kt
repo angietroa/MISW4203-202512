@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -37,6 +38,7 @@ fun AlbumScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
+            .testTag("album_screen")
     ) {
 
         LogoHeader("home_screen", navController = navController)
@@ -47,7 +49,8 @@ fun AlbumScreen(
             title = "Álbumes",
             route = "album_create",
             navController = navController,
-            true
+            tag = "create_album",
+            isList = true
         )
 
         Spacer(modifier = Modifier.height(18.dp))
@@ -70,10 +73,12 @@ fun AlbumScreen(
                 }
                 albumState.albums.isNotEmpty() -> {
                     LazyColumn(
+                        modifier = Modifier.testTag("album_list"),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(albumState.albums) { album ->
                             SecondaryAlbum(
+                                modifier = Modifier.testTag("album_item"),
                                 title = album.name,
                                 subtitle = album.performers
                                     .map { performer -> performer.name }

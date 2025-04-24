@@ -25,7 +25,8 @@ fun ArtistScreen(navController: NavHostController) {
             title = "Artistas",
             route = "artist_create",
             navController = navController,
-            true
+            tag = "create_artist",
+            isList = true
         )
     }
 }

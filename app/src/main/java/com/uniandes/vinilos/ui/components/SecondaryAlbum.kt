@@ -19,6 +19,7 @@ import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun SecondaryAlbum(
+    modifier: Modifier,
     title: String,
     subtitle: String,
     cover: String,
@@ -27,7 +28,7 @@ fun SecondaryAlbum(
     val painter = rememberAsyncImagePainter(model = cover)
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
     ) {
@@ -52,7 +53,7 @@ fun SecondaryAlbum(
                 Text(
                     text = subtitle,
                     fontSize = 17.sp,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.tertiary,
                     textAlign = TextAlign.Start
                 )
             }
