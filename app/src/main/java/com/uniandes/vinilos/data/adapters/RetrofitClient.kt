@@ -1,4 +1,4 @@
-package com.uniandes.vinilos.data.network
+package com.uniandes.vinilos.data.adapters
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
