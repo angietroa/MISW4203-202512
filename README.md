@@ -20,6 +20,11 @@ Es importante te cuente localmente con estas herramientas:
 
 
 ### Paso a paso
+    DISCLAIMER
+    La app tiene asociado un backend desplegado en la nube de AWS, 
+    sin embargo si el backend no funciona o esta caído por alguna 
+    razón se recomienda seguir los pasos de despliegue de backend 
+    para que el proyecto funcione correctamente
 
 #### Desplegar Backend API
 1. Clone el repositorio ubicado [aquí](https://github.com/TheSoftwareDesignLab/BackVynils).
