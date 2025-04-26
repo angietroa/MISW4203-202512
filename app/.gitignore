@@ -1,1 +1,5 @@
+# Android / Kotlin defaults
 /build
+*.iml
+*.bin
+*.lock
