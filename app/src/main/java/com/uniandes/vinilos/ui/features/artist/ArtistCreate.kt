@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.uniandes.vinilos.ui.components.FormButtons
 import com.uniandes.vinilos.ui.components.LogoHeader
 import com.uniandes.vinilos.ui.components.CustomInput
+import com.uniandes.vinilos.ui.models.InputField
 
 @Composable
 fun ArtistCreate(navController: NavHostController) {
@@ -66,11 +67,3 @@ fun ArtistCreate(navController: NavHostController) {
         FormButtons("artist_screen", navController = navController)
     }
 }
-
-data class InputField(
-    val key: String,
-    val label: String,
-    val placeholder: String,
-    val keyboardType: KeyboardType,
-    val value: String
-)
