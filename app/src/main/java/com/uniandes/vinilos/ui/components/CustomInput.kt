@@ -23,7 +23,8 @@ fun CustomInput(
     placeholder: String,
     value: String,
     onValueChange: (String) -> Unit,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    showError: Boolean = false,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -55,5 +56,13 @@ fun CustomInput(
             ),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
         )
+
+        if (showError) {
+            Text(
+                text = "*El campo debe completarse",
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 15.sp
+            )
+        }
     }
 }
