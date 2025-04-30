@@ -15,6 +15,7 @@ fun FormButtons (
     routeBack: String,
     navController: NavHostController,
     isAdd: Boolean = false,
+    onClickCreate: () -> Unit,
 ) {
     val buttonText = if (isAdd) "Agregar" else "Crear"
 
@@ -41,7 +42,7 @@ fun FormButtons (
                 Text(text = "Cancelar")
             }
             Button(
-                onClick = { /* agregar */ },
+                onClick = onClickCreate,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF059BFF).copy(alpha = 0.4f),
                     contentColor = MaterialTheme.colorScheme.tertiary

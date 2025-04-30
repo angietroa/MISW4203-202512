@@ -7,5 +7,6 @@ data class InputField(
     var label: String,
     var placeholder: String,
     var keyboardType: KeyboardType,
-    var value: String
+    var value: String,
+    val showError: Boolean = false,
 )

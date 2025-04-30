@@ -34,6 +34,8 @@ fun ArtistCreate(navController: NavHostController) {
         )
     }
 
+    fun handleOnClickCreate () {}
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,6 +66,11 @@ fun ArtistCreate(navController: NavHostController) {
             }
         }
 
-        FormButtons("artist_screen", navController = navController)
+        FormButtons(
+            "artist_screen",
+            navController = navController,
+            false,
+            { handleOnClickCreate() }
+        )
     }
 }
