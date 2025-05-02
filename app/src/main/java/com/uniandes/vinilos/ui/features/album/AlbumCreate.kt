@@ -1,6 +1,7 @@
 package com.uniandes.vinilos.ui.features.album
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,13 +19,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.gson.Gson
+import com.uniandes.vinilos.data.model.Album
+import com.uniandes.vinilos.data.dto.AlbumRequestDTO
 import com.uniandes.vinilos.ui.components.CustomInput
 import com.uniandes.vinilos.ui.components.FormButtons
 import com.uniandes.vinilos.ui.components.LogoHeader
 import com.uniandes.vinilos.ui.models.InputField
+import com.uniandes.vinilos.viewmodel.AlbumViewModel
+
+data class ApiError(
+    val statusCode: Int,
+    val message: String
+)
 
 @Composable
 fun AlbumCreate(navController: NavHostController) {
+    val viewModel: AlbumViewModel = viewModel()
+
     val fields = remember {
         mutableStateListOf(
             InputField("name", "Nombre", "Nombre del álbum", KeyboardType.Text, ""),
@@ -56,21 +69,40 @@ fun AlbumCreate(navController: NavHostController) {
             }
         }
 
-        if (fieldsWithErrors > 0) {
-            return
-        } else {
-            // Guardar datos
-            val performers = formData.get("performers")?.split(",")?.map { it.trim() }
-            val tracks = formData.get("tracks")?.split(",")?.map { it.trim() }
-            val comments = formData.get("comments")?.split(",")?.map { it.trim() }
+        if (fieldsWithErrors > 0) return
 
-            Log.d("AlbumCreate", "performers: $performers")
-            Log.d("AlbumCreate", "tracks: $tracks")
-            Log.d("AlbumCreate", "comments: $comments")
+        fun formatReleaseDate(year: String): String {
+            return "${year}-08-01T00:00:00-05:00"
         }
+
+        val formattedReleaseDate = formData["releaseDate"]?.let { formatReleaseDate(it) } ?: ""
+
+        val albumDTO = AlbumRequestDTO(
+            name = formData["name"] ?: "",
+            cover = formData["cover"] ?: "",
+            releaseDate = formattedReleaseDate,
+            genre = formData["genre"] ?: "",
+            recordLabel = formData["recordLabel"] ?: "",
+            description = formData["description"] ?: ""
+        )
+
+        viewModel.createAlbum(
+            album = albumDTO,
+            onSuccess = {
+                Log.d("AlbumCreate", "Álbum creado con éxito")
+                navController.popBackStack()
+            },
+            onError = { e ->
+                Log.e("AlbumCreate", "Error al crear álbum", e)
+
+                // Aquí manejas el error si el servidor devuelve un error de validación
+                val errorResponse = e.message?.let { parseErrorResponse(it) }
+                errorResponse?.let { showToastError(it, navController) }
+            }
+        )
     }
 
-    LazyColumn (
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
@@ -110,5 +142,22 @@ fun AlbumCreate(navController: NavHostController) {
                 { handleOnClickCreate() }
             )
         }
+    }
+}
+
+// Función para analizar la respuesta de error
+fun parseErrorResponse(jsonResponse: String): ApiError? {
+    return try {
+        Gson().fromJson(jsonResponse, ApiError::class.java)
+    } catch (e: Exception) {
+        null
+    }
+}
+
+// Función para mostrar el error al usuario
+fun showToastError(error: ApiError, navController: NavHostController) {
+    if (error.statusCode == 400) {
+        // Mostrar notificación de error
+        Toast.makeText(navController.context, error.message, Toast.LENGTH_LONG).show()
     }
 }
