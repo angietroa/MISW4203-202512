@@ -25,17 +25,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.gson.Gson
 import com.uniandes.vinilos.data.model.Album
 import com.uniandes.vinilos.data.dto.AlbumRequestDTO
+import com.uniandes.vinilos.data.dto.ApiError
 import com.uniandes.vinilos.ui.components.CustomInput
 import com.uniandes.vinilos.ui.components.FormButtons
 import com.uniandes.vinilos.ui.components.LogoHeader
 import com.uniandes.vinilos.ui.models.InputField
 import com.uniandes.vinilos.viewmodel.AlbumViewModel
 import androidx.compose.ui.platform.LocalContext
-
-data class ApiError(
-    val statusCode: Int,
-    val message: String
-)
 
 @Composable
 fun AlbumCreate(navController: NavHostController) {
