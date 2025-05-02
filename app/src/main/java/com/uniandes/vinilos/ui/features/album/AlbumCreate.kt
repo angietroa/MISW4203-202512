@@ -1,7 +1,9 @@
 package com.uniandes.vinilos.ui.features.album
 
+import com.uniandes.vinilos.R
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +30,7 @@ import com.uniandes.vinilos.ui.components.FormButtons
 import com.uniandes.vinilos.ui.components.LogoHeader
 import com.uniandes.vinilos.ui.models.InputField
 import com.uniandes.vinilos.viewmodel.AlbumViewModel
+import androidx.compose.ui.platform.LocalContext
 
 data class ApiError(
     val statusCode: Int,
@@ -37,6 +40,8 @@ data class ApiError(
 @Composable
 fun AlbumCreate(navController: NavHostController) {
     val viewModel: AlbumViewModel = viewModel()
+    val context = LocalContext.current
+    val errorMessage = remember { mutableStateOf<String?>(null) }
 
     val fields = remember {
         mutableStateListOf(
@@ -71,11 +76,21 @@ fun AlbumCreate(navController: NavHostController) {
 
         if (fieldsWithErrors > 0) return
 
-        fun formatReleaseDate(year: String): String {
-            return "${year}-08-01T00:00:00-05:00"
+        val year = formData["releaseDate"] ?: ""
+        if (!year.matches(Regex("\\d{4}"))) {
+            val index = fields.indexOfFirst { it.key == "releaseDate" }
+            if (index != -1) {
+                fields[index] = fields[index].copy(showError = true)
+            }
+            errorMessage.value = "El año debe contener solo 4 dígitos numéricos"
+            return
         }
 
-        val formattedReleaseDate = formData["releaseDate"]?.let { formatReleaseDate(it) } ?: ""
+        fun formatReleaseDate(year: String): String {
+            return "${year}-08-20T00:00:00-05:00"
+        }
+
+        val formattedReleaseDate = formatReleaseDate(year)
 
         val albumDTO = AlbumRequestDTO(
             name = formData["name"] ?: "",
@@ -90,14 +105,39 @@ fun AlbumCreate(navController: NavHostController) {
             album = albumDTO,
             onSuccess = {
                 Log.d("AlbumCreate", "Álbum creado con éxito")
+                Toast.makeText(context, "Álbum creado exitosamente", Toast.LENGTH_SHORT).show()
                 navController.popBackStack()
             },
             onError = { e ->
                 Log.e("AlbumCreate", "Error al crear álbum", e)
 
-                // Aquí manejas el error si el servidor devuelve un error de validación
-                val errorResponse = e.message?.let { parseErrorResponse(it) }
-                errorResponse?.let { showToastError(it, navController) }
+                val errorBody = (e as? retrofit2.HttpException)?.response()?.errorBody()?.string()
+                val errorResponse = errorBody?.let {
+                    try {
+                        Gson().fromJson(it, ApiError::class.java)
+                    } catch (ex: Exception) {
+                        Log.e("AlbumCreate", "Error al parsear el cuerpo de error", ex)
+                        null
+                    }
+                }
+
+                if (errorResponse?.statusCode == 400) {
+                    val translated = when {
+                        errorResponse.message.contains("ValidationError") &&
+                                errorResponse.message.contains("\"genre\" must be one of") -> {
+                            context.getString(R.string.genre_validation_error)
+                        }
+                        errorResponse.message.contains("ValidationError") &&
+                                errorResponse.message.contains("\"recordLabel\" must be one of") -> {
+                            context.getString(R.string.record_label_validation_error)
+                        }
+                        else -> errorResponse.message
+                    }
+
+                    errorMessage.value = translated
+                } else {
+                    errorMessage.value = context.getString(R.string.unknown_error)
+                }
             }
         )
     }
@@ -126,7 +166,14 @@ fun AlbumCreate(navController: NavHostController) {
                 placeholder = field.placeholder,
                 value = field.value,
                 onValueChange = { newValue ->
-                    fields[index] = field.copy(value = newValue, showError = false)
+                    val filteredValue = if (field.key == "releaseDate") {
+                        newValue.filter { it.isDigit() }
+                        // Si quieres limitarlo a 4 caracteres también:
+                        // newValue.filter { it.isDigit() }.take(4)
+                    } else {
+                        newValue
+                    }
+                    fields[index] = field.copy(value = filteredValue, showError = false)
                 },
                 keyboardType = field.keyboardType,
                 showError = field.showError
@@ -136,28 +183,21 @@ fun AlbumCreate(navController: NavHostController) {
 
         item {
             FormButtons(
-                "album_screen",
+                routeBack = "album_screen",
                 navController = navController,
-                false,
-                { handleOnClickCreate() }
+                isAdd = false,
+                onClickCreate = { handleOnClickCreate() },
+                errorMessage = errorMessage.value,
+                onToastShown = { errorMessage.value = null }
             )
         }
     }
 }
 
-// Función para analizar la respuesta de error
 fun parseErrorResponse(jsonResponse: String): ApiError? {
     return try {
         Gson().fromJson(jsonResponse, ApiError::class.java)
     } catch (e: Exception) {
         null
-    }
-}
-
-// Función para mostrar el error al usuario
-fun showToastError(error: ApiError, navController: NavHostController) {
-    if (error.statusCode == 400) {
-        // Mostrar notificación de error
-        Toast.makeText(navController.context, error.message, Toast.LENGTH_LONG).show()
     }
 }
