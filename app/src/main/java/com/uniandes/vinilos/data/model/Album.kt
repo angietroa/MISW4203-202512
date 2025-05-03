@@ -11,6 +11,4 @@ data class Album(
     val performers: List<Artist> = emptyList(),
     val tracks: List<Track> = emptyList(),
     val comments: List<Comment> = emptyList(),
-    // NOTE: Remove!
-    var artist: String
 )

@@ -77,9 +77,9 @@ fun AlbumDetail(albumId: String, origin: String, navController: NavHostControlle
 fun AlbumDetailContent(album: Album, origin: String, navController: NavHostController) {
     val painter = rememberAsyncImagePainter(model = album.cover)
     val releaseYear = Instant.parse(album.releaseDate).atZone(ZoneOffset.UTC).year.toString()
-    val performers = album.performers.joinToString(", ") { it.name }
-    val tracks = album.tracks.joinToString(", ") { it.name }
-    val comments = album.comments.joinToString(" - ") { it.description }
+    val performers = if (album.performers.isNotEmpty()) album.performers.joinToString(", ") { it.name } else "No hay artista registrado."
+    val tracks = if (album.tracks.isNotEmpty()) album.tracks.joinToString(", ") { it.name } else "No hay canciones registradas."
+    val comments = if (album.comments.isNotEmpty()) album.comments.joinToString(" - ") { it.description } else "No hay comentarios."
 
     Box(
         modifier = Modifier
