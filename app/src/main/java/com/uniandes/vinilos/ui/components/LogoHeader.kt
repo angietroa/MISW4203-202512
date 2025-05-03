@@ -30,7 +30,13 @@ fun LogoHeader(
                 .height(48.dp)
         ) {
             IconButton(
-                onClick = { navController.navigate(route) },
+                onClick = { if (route.isNotBlank()) {
+                    navController.navigate(route) {
+                        popUpTo(route) { inclusive = true }
+                    }
+                } else {
+                    navController.popBackStack()
+                } },
                 modifier = Modifier.align(Alignment.CenterStart)
             ) {
                 Icon(

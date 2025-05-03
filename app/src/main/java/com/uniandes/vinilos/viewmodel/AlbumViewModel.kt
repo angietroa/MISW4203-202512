@@ -33,17 +33,6 @@ class AlbumViewModel : ViewModel() {
     private val _selectedAlbumState = MutableStateFlow(SelectedAlbumUiState())
     val selectedAlbumState: StateFlow<SelectedAlbumUiState> = _selectedAlbumState.asStateFlow()
 
-    private val _snackbarMessage = MutableStateFlow<String?>(null)
-    val snackbarMessage: StateFlow<String?> = _snackbarMessage.asStateFlow()
-
-    fun setSnackbarError(message: String) {
-        _snackbarMessage.value = message
-    }
-
-    fun clearSnackbarMessage() {
-        _snackbarMessage.value = null
-    }
-
     fun loadAlbums() {
         viewModelScope.launch {
             _albumState.update { it.copy(isLoading = true, error = null) }

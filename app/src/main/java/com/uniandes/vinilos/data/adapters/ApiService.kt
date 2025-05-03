@@ -1,6 +1,7 @@
 package com.uniandes.vinilos.data.adapters
 
 import com.uniandes.vinilos.data.model.Album
+import com.uniandes.vinilos.data.model.Artist
 import com.uniandes.vinilos.data.dto.AlbumRequestDTO
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -16,4 +17,10 @@ interface ApiService {
 
     @POST("albums")
     suspend fun createAlbums(@Body album: AlbumRequestDTO): Album
+
+    @GET("musicians")
+    suspend fun getArtists(): List<Artist>
+
+    @GET("musicians/{id}")
+    suspend fun getArtistById(@Path("id") artistId: Int): Artist
 }
