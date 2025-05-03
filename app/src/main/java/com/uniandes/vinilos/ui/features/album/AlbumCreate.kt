@@ -44,7 +44,7 @@ fun AlbumCreate(navController: NavHostController) {
             InputField("name", "Nombre", "Nombre del álbum", KeyboardType.Text, ""),
             InputField("cover", "Portada", "URL de la portada", KeyboardType.Uri, ""),
             InputField("releaseDate", "Año de lanzamiento", "Ej: 2025", KeyboardType.Number, ""),
-            InputField("genre", "Género", "Ej: Pop Latino", KeyboardType.Text, ""),
+            InputField("genre", "Género", "Ej: Rock", KeyboardType.Text, ""),
             InputField("recordLabel", "Sello discografico", "Ej: Sony Music", KeyboardType.Text, ""),
             InputField("description", "Descripción", "Descripción del álbum", KeyboardType.Text, ""),
         )
