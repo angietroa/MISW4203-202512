@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="genre_validation_error">El campo &quot;género&quot; debe ser uno de los siguientes: Classical, Salsa, Rock o Folk.</string>
+    <string name="record_label_validation_error">El sello debe ser: Sony Music, EMI, Discos Fuentes, Elektra o Fania Records.</string>
+    <string name="unknown_error">Error desconocido</string>
+</resources>

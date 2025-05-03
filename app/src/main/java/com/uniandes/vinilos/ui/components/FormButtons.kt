@@ -1,23 +1,39 @@
 package com.uniandes.vinilos.ui.components
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun FormButtons (
+fun FormButtons(
     routeBack: String,
     navController: NavHostController,
     isAdd: Boolean = false,
     onClickCreate: () -> Unit,
+    errorMessage: String? = null,
+    onToastShown: () -> Unit = {}
 ) {
     val buttonText = if (isAdd) "Agregar" else "Crear"
+
+    val context = LocalContext.current
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let {
+            Log.d("FormButtons", "Mostrando toast con error: $it")
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            onToastShown()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -55,5 +71,4 @@ fun FormButtons (
             }
         }
     }
-
 }

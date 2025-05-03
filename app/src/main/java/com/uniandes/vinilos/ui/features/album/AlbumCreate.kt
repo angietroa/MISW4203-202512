@@ -1,6 +1,9 @@
 package com.uniandes.vinilos.ui.features.album
 
+import com.uniandes.vinilos.R
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,13 +21,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.gson.Gson
+import com.uniandes.vinilos.data.model.Album
+import com.uniandes.vinilos.data.dto.AlbumRequestDTO
+import com.uniandes.vinilos.data.dto.ApiError
 import com.uniandes.vinilos.ui.components.CustomInput
 import com.uniandes.vinilos.ui.components.FormButtons
 import com.uniandes.vinilos.ui.components.LogoHeader
 import com.uniandes.vinilos.ui.models.InputField
+import com.uniandes.vinilos.viewmodel.AlbumViewModel
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun AlbumCreate(navController: NavHostController) {
+    val viewModel: AlbumViewModel = viewModel()
+    val context = LocalContext.current
+    val errorMessage = remember { mutableStateOf<String?>(null) }
+
     val fields = remember {
         mutableStateListOf(
             InputField("name", "Nombre", "Nombre del álbum", KeyboardType.Text, ""),
@@ -56,21 +70,75 @@ fun AlbumCreate(navController: NavHostController) {
             }
         }
 
-        if (fieldsWithErrors > 0) {
-            return
-        } else {
-            // Guardar datos
-            val performers = formData.get("performers")?.split(",")?.map { it.trim() }
-            val tracks = formData.get("tracks")?.split(",")?.map { it.trim() }
-            val comments = formData.get("comments")?.split(",")?.map { it.trim() }
+        if (fieldsWithErrors > 0) return
 
-            Log.d("AlbumCreate", "performers: $performers")
-            Log.d("AlbumCreate", "tracks: $tracks")
-            Log.d("AlbumCreate", "comments: $comments")
+        val year = formData["releaseDate"] ?: ""
+        if (!year.matches(Regex("\\d{4}"))) {
+            val index = fields.indexOfFirst { it.key == "releaseDate" }
+            if (index != -1) {
+                fields[index] = fields[index].copy(showError = true)
+            }
+            errorMessage.value = "El año debe contener solo 4 dígitos numéricos"
+            return
         }
+
+        fun formatReleaseDate(year: String): String {
+            return "${year}-08-20T00:00:00-05:00"
+        }
+
+        val formattedReleaseDate = formatReleaseDate(year)
+
+        val albumDTO = AlbumRequestDTO(
+            name = formData["name"] ?: "",
+            cover = formData["cover"] ?: "",
+            releaseDate = formattedReleaseDate,
+            genre = formData["genre"] ?: "",
+            recordLabel = formData["recordLabel"] ?: "",
+            description = formData["description"] ?: ""
+        )
+
+        viewModel.createAlbum(
+            album = albumDTO,
+            onSuccess = {
+                Log.d("AlbumCreate", "Álbum creado con éxito")
+                Toast.makeText(context, "Álbum creado exitosamente", Toast.LENGTH_SHORT).show()
+                navController.popBackStack()
+            },
+            onError = { e ->
+                Log.e("AlbumCreate", "Error al crear álbum", e)
+
+                val errorBody = (e as? retrofit2.HttpException)?.response()?.errorBody()?.string()
+                val errorResponse = errorBody?.let {
+                    try {
+                        Gson().fromJson(it, ApiError::class.java)
+                    } catch (ex: Exception) {
+                        Log.e("AlbumCreate", "Error al parsear el cuerpo de error", ex)
+                        null
+                    }
+                }
+
+                if (errorResponse?.statusCode == 400) {
+                    val translated = when {
+                        errorResponse.message.contains("ValidationError") &&
+                                errorResponse.message.contains("\"genre\" must be one of") -> {
+                            context.getString(R.string.genre_validation_error)
+                        }
+                        errorResponse.message.contains("ValidationError") &&
+                                errorResponse.message.contains("\"recordLabel\" must be one of") -> {
+                            context.getString(R.string.record_label_validation_error)
+                        }
+                        else -> errorResponse.message
+                    }
+
+                    errorMessage.value = translated
+                } else {
+                    errorMessage.value = context.getString(R.string.unknown_error)
+                }
+            }
+        )
     }
 
-    LazyColumn (
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
@@ -94,7 +162,14 @@ fun AlbumCreate(navController: NavHostController) {
                 placeholder = field.placeholder,
                 value = field.value,
                 onValueChange = { newValue ->
-                    fields[index] = field.copy(value = newValue, showError = false)
+                    val filteredValue = if (field.key == "releaseDate") {
+                        newValue.filter { it.isDigit() }
+                        // Si quieres limitarlo a 4 caracteres también:
+                        // newValue.filter { it.isDigit() }.take(4)
+                    } else {
+                        newValue
+                    }
+                    fields[index] = field.copy(value = filteredValue, showError = false)
                 },
                 keyboardType = field.keyboardType,
                 showError = field.showError
@@ -104,11 +179,21 @@ fun AlbumCreate(navController: NavHostController) {
 
         item {
             FormButtons(
-                "album_screen",
+                routeBack = "album_screen",
                 navController = navController,
-                false,
-                { handleOnClickCreate() }
+                isAdd = false,
+                onClickCreate = { handleOnClickCreate() },
+                errorMessage = errorMessage.value,
+                onToastShown = { errorMessage.value = null }
             )
         }
+    }
+}
+
+fun parseErrorResponse(jsonResponse: String): ApiError? {
+    return try {
+        Gson().fromJson(jsonResponse, ApiError::class.java)
+    } catch (e: Exception) {
+        null
     }
 }

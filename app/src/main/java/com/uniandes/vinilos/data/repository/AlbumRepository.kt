@@ -1,6 +1,7 @@
 package com.uniandes.vinilos.data.repository
 
 import com.uniandes.vinilos.data.model.Album
+import com.uniandes.vinilos.data.dto.AlbumRequestDTO
 import com.uniandes.vinilos.data.adapters.RetrofitClient
 
 class AlbumRepository {
@@ -12,5 +13,9 @@ class AlbumRepository {
 
     suspend fun getAlbumById(albumId: Int): Album {
         return apiService.getAlbumById(albumId)
+    }
+
+    suspend fun createAlbums(album: AlbumRequestDTO): Album{
+        return apiService.createAlbums(album)
     }
 }
