@@ -123,6 +123,7 @@ fun HomeScreen(
                     ) {
                         items(artistState.artists.take(3)) { artist ->
                             MainArtist(
+                                modifier = Modifier.testTag("artist_item"),
                                 cover = artist.image,
                                 title = artist.name,
                                 onClick = {

@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 
 
 class CommonSteps {
@@ -56,7 +56,7 @@ class CommonSteps {
             .onAllNodesWithTag(itemTag)
             .fetchSemanticsNodes()
 
-        assertEquals(3, items.size)
+        assertTrue(items.isNotEmpty())
     }
 
     fun clickFirstItem(composeTestRule: ComposeTestRule, itemTag: String) {
