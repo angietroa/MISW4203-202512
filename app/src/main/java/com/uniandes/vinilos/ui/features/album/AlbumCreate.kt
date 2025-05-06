@@ -42,15 +42,16 @@ fun AlbumCreate(navController: NavHostController) {
     val fields = remember {
         mutableStateListOf(
             InputField("name", "Nombre", "Nombre del álbum", KeyboardType.Text, ""),
-            InputField("performers", "Interpretes", "Nombre de los interpretes", KeyboardType.Text, ""),
             InputField("cover", "Portada", "URL de la portada", KeyboardType.Uri, ""),
             InputField("releaseDate", "Año de lanzamiento", "Ej: 2025", KeyboardType.Number, ""),
-            InputField("genre", "Género", "Ej: Pop Latino", KeyboardType.Text, ""),
+            InputField("genre", "Género", "Ej: Rock", KeyboardType.Text, ""),
             InputField("recordLabel", "Sello discografico", "Ej: Sony Music", KeyboardType.Text, ""),
-            InputField("tracks", "Canciones", "Canciones del álbum", KeyboardType.Text, ""),
             InputField("description", "Descripción", "Descripción del álbum", KeyboardType.Text, ""),
-            InputField("comments", "Comentarios", "Comentarios del álbum", KeyboardType.Text, ""),
         )
+    }
+
+    fun formatReleaseDate(year: String): String {
+        return "${year}-08-20T00:00:00-05:00"
     }
 
     fun handleOnClickCreate() {
@@ -80,10 +81,6 @@ fun AlbumCreate(navController: NavHostController) {
             }
             errorMessage.value = "El año debe contener solo 4 dígitos numéricos"
             return
-        }
-
-        fun formatReleaseDate(year: String): String {
-            return "${year}-08-20T00:00:00-05:00"
         }
 
         val formattedReleaseDate = formatReleaseDate(year)
