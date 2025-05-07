@@ -23,7 +23,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.gson.Gson
-import com.uniandes.vinilos.data.model.Album
 import com.uniandes.vinilos.data.dto.AlbumRequestDTO
 import com.uniandes.vinilos.data.dto.ApiError
 import com.uniandes.vinilos.ui.components.CustomInput
@@ -161,8 +160,6 @@ fun AlbumCreate(navController: NavHostController) {
                 onValueChange = { newValue ->
                     val filteredValue = if (field.key == "releaseDate") {
                         newValue.filter { it.isDigit() }
-                        // Si quieres limitarlo a 4 caracteres también:
-                        // newValue.filter { it.isDigit() }.take(4)
                     } else {
                         newValue
                     }
@@ -184,13 +181,5 @@ fun AlbumCreate(navController: NavHostController) {
                 onToastShown = { errorMessage.value = null }
             )
         }
-    }
-}
-
-fun parseErrorResponse(jsonResponse: String): ApiError? {
-    return try {
-        Gson().fromJson(jsonResponse, ApiError::class.java)
-    } catch (e: Exception) {
-        null
     }
 }

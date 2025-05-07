@@ -80,9 +80,7 @@ fun AlbumScreen(
                             SecondaryAlbum(
                                 modifier = Modifier.testTag("album_item"),
                                 title = album.name,
-                                subtitle = album.performers
-                                    .map { performer -> performer.name }
-                                    .joinToString(", "),
+                                subtitle = album.performers.joinToString(", ") { performer -> performer.name },
                                 cover = album.cover,
                                 onClick = {
                                     navController.navigate("album_detail/${album.id}?origin=album_screen")

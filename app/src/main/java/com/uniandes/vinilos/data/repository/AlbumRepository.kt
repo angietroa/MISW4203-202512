@@ -1,7 +1,6 @@
 package com.uniandes.vinilos.data.repository
 
 import com.uniandes.vinilos.data.model.Album
-import com.uniandes.vinilos.data.model.Artist
 import com.uniandes.vinilos.data.dto.AlbumRequestDTO
 import com.uniandes.vinilos.data.adapters.RetrofitClient
 

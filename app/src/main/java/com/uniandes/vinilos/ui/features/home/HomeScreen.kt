@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.uniandes.vinilos.R
-import com.uniandes.vinilos.data.model.Artist
 import com.uniandes.vinilos.ui.components.MainAlbum
 import com.uniandes.vinilos.ui.components.MainArtist
 import com.uniandes.vinilos.ui.components.SectionHeader

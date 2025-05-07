@@ -111,7 +111,7 @@ fun ArtistDetail(artistId: String, origin: String, navController: NavHostControl
                     DetailField("Descripción", artist.description)
                     DetailField(
                         "Cumpleaños",
-                        artist.birthDate?.let {
+                        artist.birthDate.let {
                             val date = Instant.parse(it).atZone(ZoneOffset.UTC).toLocalDate()
                             val formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", Locale("es"))
                             date.format(formatter)

@@ -61,7 +61,7 @@ sdk.dir=/Users/danisuarez/Library/Android/sdk
   BUILD SUCCESSFUL in 897ms
 ```
 
-6. Asegurese de tener un dispositivo virtual o un dispositivo fisico en el cual pueda probar la aplicación.
+7. Asegurese de tener un dispositivo virtual o un dispositivo fisico en el cual pueda probar la aplicación.
     * Para crear y administrar un dispositivo virtual, puede seguir [esta guia](https://developer.android.com/studio/run/managing-avds).
     * Para correr la aplicación en un dispositivo local siga [esta guia](https://developer.android.com/studio/run/device).
 

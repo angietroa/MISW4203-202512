@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
+@Suppress("unused")
 interface ApiService {
     @GET("albums")
     suspend fun getAlbums(): List<Album>

@@ -6,8 +6,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+@Suppress("unused")
 object RetrofitClient {
-    private val BASE_URL = BuildConfig.BACKEND_BASE_URL
+    private const val BASE_URL = BuildConfig.BACKEND_BASE_URL
 
     // Configuración del interceptor de logging
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
