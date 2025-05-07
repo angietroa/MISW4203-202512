@@ -1,5 +1,6 @@
 package com.uniandes.vinilos.data.model
 
+@Suppress("unused")
 data class Album(
     val id: String,
     val name: String,

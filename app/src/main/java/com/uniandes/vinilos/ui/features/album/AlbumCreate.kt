@@ -161,8 +161,6 @@ fun AlbumCreate(navController: NavHostController) {
                 onValueChange = { newValue ->
                     val filteredValue = if (field.key == "releaseDate") {
                         newValue.filter { it.isDigit() }
-                        // Si quieres limitarlo a 4 caracteres también:
-                        // newValue.filter { it.isDigit() }.take(4)
                     } else {
                         newValue
                     }
@@ -184,13 +182,5 @@ fun AlbumCreate(navController: NavHostController) {
                 onToastShown = { errorMessage.value = null }
             )
         }
-    }
-}
-
-fun parseErrorResponse(jsonResponse: String): ApiError? {
-    return try {
-        Gson().fromJson(jsonResponse, ApiError::class.java)
-    } catch (e: Exception) {
-        null
     }
 }
