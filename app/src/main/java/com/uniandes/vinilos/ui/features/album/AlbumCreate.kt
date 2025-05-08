@@ -171,7 +171,8 @@ fun AlbumCreate(navController: NavHostController) {
                     fields[index] = field.copy(value = filteredValue, showError = false)
                 },
                 keyboardType = field.keyboardType,
-                showError = field.showError
+                showError = field.showError,
+                key = field.key
             )
             Spacer(modifier = Modifier.height(8.dp))
         }

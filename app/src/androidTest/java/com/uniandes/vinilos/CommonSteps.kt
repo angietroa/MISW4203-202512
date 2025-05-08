@@ -3,9 +3,13 @@ package com.uniandes.vinilos
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.printToLog
 import junit.framework.TestCase.assertTrue
 
 
@@ -65,5 +69,24 @@ class CommonSteps {
             .onAllNodesWithTag(itemTag)
             .onFirst()
             .performClick()
+    }
+
+    fun clickItem(composeTestRule: ComposeTestRule, itemTag: String) {
+        waitUntil(composeTestRule, itemTag)
+        composeTestRule
+            .onNodeWithTag(itemTag)
+            .performClick()
+    }
+
+    fun fillInputField(composeTestRule: ComposeTestRule, fieldKey: String, text: String) {
+        // Print all available test tags
+        println("==== AVAILABLE TEST TAGS ====")
+        composeTestRule.onRoot().printToLog("TEST_TAGS")
+
+        composeTestRule.onNodeWithTag("input_$fieldKey").performTextInput(text)
+    }
+
+    fun validateTextExists(composeTestRule: ComposeTestRule, text: String) {
+        composeTestRule.onAllNodesWithText(text).onFirst().assertExists()
     }
 }
