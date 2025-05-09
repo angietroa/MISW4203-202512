@@ -1,16 +1,24 @@
 package com.uniandes.vinilos
 
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.printToLog
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 
 
 class CommonSteps {
@@ -79,14 +87,20 @@ class CommonSteps {
     }
 
     fun fillInputField(composeTestRule: ComposeTestRule, fieldKey: String, text: String) {
-        // Print all available test tags
-        println("==== AVAILABLE TEST TAGS ====")
-        composeTestRule.onRoot().printToLog("TEST_TAGS")
-
         composeTestRule.onNodeWithTag("input_$fieldKey").performTextInput(text)
     }
 
-    fun validateTextExists(composeTestRule: ComposeTestRule, text: String) {
-        composeTestRule.onAllNodesWithText(text).onFirst().assertExists()
+    fun validateAlbumItemExists(composeTestRule: ComposeTestRule, albumTitle: String) {
+        runBlocking {
+            delay(5000)
+        }
+
+        val albumTexts = composeTestRule.onAllNodesWithTag("album_item").fetchSemanticsNodes().map { node ->
+            node.config.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.Text) { emptyList() }
+                .joinToString(", ")
+        }
+
+        val albumExists = albumTexts.any { it.contains(albumTitle) }
+        assert(albumExists) { "Album with title '$albumTitle' not found in: $albumTexts" }
     }
 }

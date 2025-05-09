@@ -22,7 +22,7 @@ class ArtistRepository {
     private val cacheMutex = Mutex()
     
     // Tiempo de vida de caché (en milisegundos)
-    private val cacheLifetime = TimeUnit.MINUTES.toMillis(5)
+    private val cacheLifetime = TimeUnit.SECONDS.toMillis(5)
     
     suspend fun getArtists(): List<Artist> = withContext(Dispatchers.IO) {
         // Verificamos si hay datos en caché y si son válidos

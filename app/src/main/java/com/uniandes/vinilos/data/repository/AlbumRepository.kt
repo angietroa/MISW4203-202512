@@ -24,14 +24,14 @@ class AlbumRepository {
     private val cacheMutex = Mutex()
     
     // Tiempo de vida de caché (en milisegundos)
-    private val cacheLifetime = TimeUnit.MINUTES.toMillis(5)
+    private val cacheLifetime = TimeUnit.SECONDS.toMillis(5)
     
     suspend fun getAlbums(): List<Album> = withContext(Dispatchers.IO) {
         // Verificamos si hay datos en caché y si son válidos
         if (albumsCache.data != null && !albumsCache.isExpired(cacheLifetime)) {
             return@withContext albumsCache.data!!
         }
-        
+
         // Si no hay datos en caché o han expirado, hacemos la llamada a la API
         val freshData = apiService.getAlbums()
         
@@ -64,7 +64,7 @@ class AlbumRepository {
         return@withContext freshData
     }
 
-    suspend fun createAlbums(album: AlbumRequestDTO): Album = withContext(Dispatchers.IO) {
+    suspend fun createAlbums(album: AlbumRequestDTO): Album {
         val result = apiService.createAlbums(album)
         
         // Invalidamos la caché de álbumes para que se recargue en la próxima solicitud
@@ -72,6 +72,6 @@ class AlbumRepository {
             albumsCache.invalidate()
         }
         
-        return@withContext result
+        return result
     }
 }
