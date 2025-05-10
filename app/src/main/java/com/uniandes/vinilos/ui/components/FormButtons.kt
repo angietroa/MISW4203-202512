@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun FormButtons(
@@ -64,7 +65,9 @@ fun FormButtons(
                     contentColor = MaterialTheme.colorScheme.tertiary
                 ),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .testTag("create_button")
+                    .then(Modifier.weight(1f)),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
             ) {
                 Text(text = buttonText)

@@ -84,6 +84,7 @@ dependencies {
     // Instrumented Tests
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.javafaker)
 
     // Jetpack Compose UI Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))

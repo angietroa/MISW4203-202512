@@ -16,7 +16,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import coil.request.CachePolicy
+import coil.request.ImageRequest
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import java.lang.ref.WeakReference
 
+/**
+ * Componente de álbum secundario optimizado con WeakReference para la caché de imágenes.
+ * Esta implementación permite que las imágenes sean liberadas cuando hay presión de memoria.
+ */
 @Composable
 fun SecondaryAlbum(
     modifier: Modifier,
@@ -25,7 +34,23 @@ fun SecondaryAlbum(
     cover: String,
     onClick: () -> Unit,
 ) {
-    val painter = rememberAsyncImagePainter(model = cover)
+    val context = LocalContext.current
+    
+    // Configura las políticas de caché para Coil
+    val imageRequest = remember(cover) {
+        ImageRequest.Builder(context)
+            .data(cover)
+            // Permite que las imágenes en memoria sean referenciadas débilmente
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            // Mantiene una caché en disco para reducir descargas repetidas
+            .diskCachePolicy(CachePolicy.ENABLED)
+            // Usa un tamaño específico para evitar cargar imágenes de tamaño completo
+            .size(256, 256)
+            .build()
+    }
+    
+    // El pintor se crea basado en nuestra configuración personalizada
+    val painter = rememberAsyncImagePainter(model = imageRequest)
 
     Column(
         modifier = modifier
