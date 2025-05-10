@@ -10,15 +10,23 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
+import java.util.WeakHashMap
 
+/**
+ * Repositorio para gestionar álbumes con optimizaciones de memoria.
+ * Utiliza WeakHashMap para permitir que las entradas de caché sean liberadas
+ * cuando hay presión de memoria.
+ */
 class AlbumRepository {
     private val apiService = RetrofitClient.apiService
     
     // Caché para la lista de álbumes
     private val albumsCache = CacheEntry<List<Album>>(null)
     
-    // Caché para álbumes individuales por ID
-    private val albumByIdCache = mutableMapOf<Int, CacheEntry<Album>>()
+    // Caché para álbumes individuales por ID usando WeakHashMap
+    // Esto permite que las entradas sean liberadas cuando hay presión de memoria
+    // y no son fuertemente referenciadas en otro lugar
+    private val albumByIdCache = WeakHashMap<Int, CacheEntry<Album>>()
     
     // Mutex para operaciones de escritura seguras en la caché
     private val cacheMutex = Mutex()

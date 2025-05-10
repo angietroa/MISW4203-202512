@@ -9,6 +9,7 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
@@ -86,21 +87,12 @@ class CommonSteps {
             .performClick()
     }
 
+    fun clickByContentDescription(composeTestRule: ComposeTestRule) {
+        composeTestRule.onNodeWithContentDescription("Atrás").performClick()
+    }
+
     fun fillInputField(composeTestRule: ComposeTestRule, fieldKey: String, text: String) {
         composeTestRule.onNodeWithTag("input_$fieldKey").performTextInput(text)
     }
 
-    fun validateAlbumItemExists(composeTestRule: ComposeTestRule, albumTitle: String) {
-        runBlocking {
-            delay(5000)
-        }
-
-        val albumTexts = composeTestRule.onAllNodesWithTag("album_item").fetchSemanticsNodes().map { node ->
-            node.config.getOrElse(androidx.compose.ui.semantics.SemanticsProperties.Text) { emptyList() }
-                .joinToString(", ")
-        }
-
-        val albumExists = albumTexts.any { it.contains(albumTitle) }
-        assert(albumExists) { "Album with title '$albumTitle' not found in: $albumTexts" }
-    }
 }

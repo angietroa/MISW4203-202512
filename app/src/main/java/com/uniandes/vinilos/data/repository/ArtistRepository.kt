@@ -8,15 +8,23 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
+import java.util.WeakHashMap
 
+/**
+ * Repositorio para gestionar artistas con optimizaciones de memoria.
+ * Utiliza WeakHashMap para permitir que las entradas de caché sean liberadas
+ * cuando hay presión de memoria.
+ */
 class ArtistRepository {
     private val apiService = RetrofitClient.apiService
     
     // Caché para la lista de artistas
     private val artistsCache = CacheEntry<List<Artist>>(null)
     
-    // Caché para artistas individuales por ID
-    private val artistByIdCache = mutableMapOf<Int, CacheEntry<Artist>>()
+    // Caché para artistas individuales por ID usando WeakHashMap
+    // Esto permite que las entradas sean liberadas cuando hay presión de memoria
+    // y no son fuertemente referenciadas en otro lugar
+    private val artistByIdCache = WeakHashMap<Int, CacheEntry<Artist>>()
     
     // Mutex para operaciones de escritura seguras en la caché
     private val cacheMutex = Mutex()

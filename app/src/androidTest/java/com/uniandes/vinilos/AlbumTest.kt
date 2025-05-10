@@ -6,12 +6,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.hasText
 import com.github.javafaker.Faker
 import kotlinx.coroutines.delay
@@ -85,9 +81,6 @@ class AlbumTest {
         // Count initial number of albums
         commonSteps.clickOn(rule, "show_more_album")
         commonSteps.validateListIsVisible(rule, "album_list")
-        runBlocking { delay(2000) }
-        val initialCount = rule.onAllNodesWithTag("album_item").fetchSemanticsNodes().size
-        println("Initial album count: $initialCount")
 
         // Navigate to create form
         commonSteps.clickItem(rule, "create_album")
@@ -130,15 +123,6 @@ class AlbumTest {
                 val texts = node.config.getOrElse(SemanticsProperties.Text) { emptyList() }
                 texts.any { it.text.contains(albumTitle) }
             }
-
-        // Log de ayuda
-        val allAlbumTexts = rule.onAllNodesWithTag("album_item")
-            .fetchSemanticsNodes()
-            .mapIndexed { index, node ->
-                val texts = node.config.getOrElse(SemanticsProperties.Text) { emptyList() }
-                "Album $index: ${texts.joinToString(", ")}"
-            }
-        println("All albums after creation: $allAlbumTexts")
 
         assert(albumFound) { "El álbum '$albumTitle' no aparece en la lista después de crearlo." }
     }
