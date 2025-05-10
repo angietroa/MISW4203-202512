@@ -1,17 +1,29 @@
 package com.uniandes.vinilos
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.compose.ui.test.hasText
+import com.github.javafaker.Faker
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.Locale
 
 @RunWith(AndroidJUnit4::class)
 class AlbumTest {
 
     @get:Rule val rule = createAndroidComposeRule<MainActivity>()
     private val commonSteps = CommonSteps()
+    private val faker = Faker(Locale.ENGLISH)
 
     @Before
     fun resetAppState() {
@@ -55,4 +67,91 @@ class AlbumTest {
         //Then
         commonSteps.validateElement(rule, "album_detail")
     }
+
+    //E009: Crear un album con datos correctos
+    @Test
+    fun createAlbumSuccessfully() {
+        val albumTitle = faker.lorem().word()
+        val albumCover = "https://picsum.photos/500/500?random=" + faker.number().digits(5)
+        val releaseYear = faker.number().numberBetween(1950, 2025).toString()
+        val genre = listOf("Classical", "Salsa", "Rock", "Folk").random()
+        val recordLabel = listOf("Sony Music", "EMI", "Discos Fuentes", "Elektra", "Fania Records").random()
+        val description = faker.lorem().paragraph(2)
+
+        // Count initial number of albums
+        commonSteps.clickOn(rule, "show_more_album")
+        commonSteps.validateListIsVisible(rule, "album_list")
+
+        // Navigate to create form
+        commonSteps.clickItem(rule, "create_album")
+        commonSteps.validateListIsVisible(rule, "album_create_form")
+
+        // Fill out the form
+        commonSteps.fillInputField(rule, "name", albumTitle)
+        commonSteps.fillInputField(rule, "cover", albumCover)
+        commonSteps.fillInputField(rule, "releasedate", releaseYear)
+        commonSteps.fillInputField(rule, "genre", genre)
+        commonSteps.fillInputField(rule, "recordlabel", recordLabel)
+        commonSteps.fillInputField(rule, "description", description)
+
+        // Create album
+        commonSteps.clickItem(rule, "create_button")
+        commonSteps.validateListIsVisible(rule, "album_list")
+
+        // Navigate away y volver para refrescar
+        rule.onNodeWithContentDescription("Atrás").performClick()
+        runBlocking { delay(1000) }
+        commonSteps.clickOn(rule, "show_more_album")
+        commonSteps.validateListIsVisible(rule, "album_list")
+        runBlocking { delay(3000) }
+
+        // Forzar scroll hasta el nuevo álbum
+        try {
+            rule.onNodeWithTag("album_list")
+                .performScrollToNode(hasText(albumTitle))
+            println("Scrolled to album: $albumTitle")
+        } catch (e: Exception) {
+            println("No se pudo hacer scroll al álbum: ${e.message}")
+        }
+
+        runBlocking { delay(2000) }
+
+        // Verificar que el álbum aparece en el listado
+        val albumFound = rule.onAllNodesWithTag("album_item")
+            .fetchSemanticsNodes()
+            .any { node ->
+                val texts = node.config.getOrElse(SemanticsProperties.Text) { emptyList() }
+                texts.any { it.text.contains(albumTitle) }
+            }
+
+        assert(albumFound) { "El álbum '$albumTitle' no aparece en la lista después de crearlo." }
+    }
+
+    //E010: Crear un album con datos invalidos
+    @Test
+    fun createAlbumWithFormErrors() {
+        // Given
+        commonSteps.clickOn(rule, "show_more_album")
+        commonSteps.validateListIsVisible(rule, "album_list")
+        commonSteps.clickItem(rule, "create_album")
+        commonSteps.validateListIsVisible(rule, "album_create_form")
+        commonSteps.fillInputField(rule, "name", "")
+        commonSteps.fillInputField(rule, "cover", "")
+        commonSteps.fillInputField(rule, "releasedate", "")
+        commonSteps.fillInputField(rule, "genre", "")
+        commonSteps.fillInputField(rule, "recordlabel", "")
+        commonSteps.fillInputField(rule, "description", "")
+
+        // When
+        commonSteps.clickItem(rule, "create_button")
+
+        // Then
+        commonSteps.validateElement(rule, "input_error_name")
+        commonSteps.validateElement(rule, "input_error_cover")
+        commonSteps.validateElement(rule, "input_error_releasedate")
+        commonSteps.validateElement(rule, "input_error_genre")
+        commonSteps.validateElement(rule, "input_error_recordlabel")
+        commonSteps.validateElement(rule, "input_error_description")
+    }
+
 }

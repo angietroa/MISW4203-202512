@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun CustomInput(
@@ -25,6 +26,7 @@ fun CustomInput(
     onValueChange: (String) -> Unit,
     keyboardType: KeyboardType = KeyboardType.Text,
     showError: Boolean = false,
+    key: String = ""
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -42,7 +44,8 @@ fun CustomInput(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.Black)
-                .height(48.dp),
+                .height(48.dp)
+                .testTag("input_${key.lowercase()}"),
             colors = TextFieldDefaults.colors(
                 focusedTextColor = MaterialTheme.colorScheme.secondary,
                 unfocusedTextColor = MaterialTheme.colorScheme.secondary,
@@ -61,7 +64,8 @@ fun CustomInput(
             Text(
                 text = "*El campo debe completarse",
                 color = MaterialTheme.colorScheme.error,
-                fontSize = 15.sp
+                fontSize = 15.sp,
+                modifier = Modifier.testTag("input_error_${key.lowercase()}")
             )
         }
     }

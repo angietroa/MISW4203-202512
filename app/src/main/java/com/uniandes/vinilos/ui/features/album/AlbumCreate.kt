@@ -31,6 +31,7 @@ import com.uniandes.vinilos.ui.components.LogoHeader
 import com.uniandes.vinilos.ui.models.InputField
 import com.uniandes.vinilos.viewmodel.AlbumViewModel
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun AlbumCreate(navController: NavHostController) {
@@ -139,6 +140,7 @@ fun AlbumCreate(navController: NavHostController) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
+            .testTag("album_create_form")
     ) {
 
         item {
@@ -166,7 +168,8 @@ fun AlbumCreate(navController: NavHostController) {
                     fields[index] = field.copy(value = filteredValue, showError = false)
                 },
                 keyboardType = field.keyboardType,
-                showError = field.showError
+                showError = field.showError,
+                key = field.key
             )
             Spacer(modifier = Modifier.height(8.dp))
         }

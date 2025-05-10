@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
@@ -43,7 +44,7 @@ fun LogoHeader(
                     contentDescription = "Atrás",
                     tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(24.dp).testTag("navigation_back")
                 )
             }
 

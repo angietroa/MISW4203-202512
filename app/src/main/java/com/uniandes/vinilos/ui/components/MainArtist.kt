@@ -20,6 +20,7 @@ import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun MainArtist(
+    modifier: Modifier,
     cover: String,
     title: String,
     onClick: () -> Unit,
@@ -27,7 +28,7 @@ fun MainArtist(
     val painter = rememberAsyncImagePainter(model = cover)
 
     Column(
-        modifier = Modifier.clickable { onClick() },
+        modifier = modifier.clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
