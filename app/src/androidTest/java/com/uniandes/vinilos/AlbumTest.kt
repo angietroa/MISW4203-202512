@@ -1,14 +1,7 @@
 package com.uniandes.vinilos
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithTag
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollToNode
-import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.compose.ui.test.hasText
 import com.github.javafaker.Faker
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -78,15 +71,11 @@ class AlbumTest {
         val recordLabel = listOf("Sony Music", "EMI", "Discos Fuentes", "Elektra", "Fania Records").random()
         val description = faker.lorem().paragraph(2)
 
-        // Count initial number of albums
+        // Given
         commonSteps.clickOn(rule, "show_more_album")
         commonSteps.validateListIsVisible(rule, "album_list")
-
-        // Navigate to create form
         commonSteps.clickItem(rule, "create_album")
         commonSteps.validateListIsVisible(rule, "album_create_form")
-
-        // Fill out the form
         commonSteps.fillInputField(rule, "name", albumTitle)
         commonSteps.fillInputField(rule, "cover", albumCover)
         commonSteps.fillInputField(rule, "releasedate", releaseYear)
@@ -94,36 +83,18 @@ class AlbumTest {
         commonSteps.fillInputField(rule, "recordlabel", recordLabel)
         commonSteps.fillInputField(rule, "description", description)
 
-        // Create album
+        // When
         commonSteps.clickItem(rule, "create_button")
-        commonSteps.validateListIsVisible(rule, "album_list")
 
-        // Navigate away y volver para refrescar
-        rule.onNodeWithContentDescription("Atrás").performClick()
+        // Then
+        commonSteps.validateListIsVisible(rule, "album_list")
+        commonSteps.clickByContentDescription(rule, "Atrás")
         runBlocking { delay(1000) }
         commonSteps.clickOn(rule, "show_more_album")
         commonSteps.validateListIsVisible(rule, "album_list")
         runBlocking { delay(3000) }
-
-        // Forzar scroll hasta el nuevo álbum
-        try {
-            rule.onNodeWithTag("album_list")
-                .performScrollToNode(hasText(albumTitle))
-            println("Scrolled to album: $albumTitle")
-        } catch (e: Exception) {
-            println("No se pudo hacer scroll al álbum: ${e.message}")
-        }
-
-        runBlocking { delay(2000) }
-
-        // Verificar que el álbum aparece en el listado
-        val albumFound = rule.onAllNodesWithTag("album_item")
-            .fetchSemanticsNodes()
-            .any { node ->
-                val texts = node.config.getOrElse(SemanticsProperties.Text) { emptyList() }
-                texts.any { it.text.contains(albumTitle) }
-            }
-
+        commonSteps.scrollInListToATextElement(rule, "album_list", albumTitle)
+        val albumFound = commonSteps.findTextInTagList(rule, "album_item", albumTitle)
         assert(albumFound) { "El álbum '$albumTitle' no aparece en la lista después de crearlo." }
     }
 
