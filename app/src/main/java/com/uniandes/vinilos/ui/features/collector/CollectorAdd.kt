@@ -18,6 +18,8 @@ import com.uniandes.vinilos.ui.components.LogoHeader
 
 @Composable
 fun CollectorAdd(collectorId: String, navController: NavHostController) {
+    fun handleOnClickCreate() {}
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -33,6 +35,11 @@ fun CollectorAdd(collectorId: String, navController: NavHostController) {
             color = MaterialTheme.colorScheme.primary
         )
 
-        FormButtons("collector_screen", navController = navController, true)
+        FormButtons(
+            "collector_screen",
+            navController = navController,
+            true,
+            { handleOnClickCreate() }
+        )
     }
 }

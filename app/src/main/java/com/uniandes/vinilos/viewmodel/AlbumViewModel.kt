@@ -3,6 +3,7 @@ package com.uniandes.vinilos.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uniandes.vinilos.data.model.Album
+import com.uniandes.vinilos.data.dto.AlbumRequestDTO
 import com.uniandes.vinilos.data.repository.AlbumRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +32,6 @@ class AlbumViewModel : ViewModel() {
 
     private val _selectedAlbumState = MutableStateFlow(SelectedAlbumUiState())
     val selectedAlbumState: StateFlow<SelectedAlbumUiState> = _selectedAlbumState.asStateFlow()
-
 
     fun loadAlbums() {
         viewModelScope.launch {
@@ -67,6 +67,17 @@ class AlbumViewModel : ViewModel() {
                         isLoading = false
                     )
                 }
+            }
+        }
+    }
+
+    fun createAlbum(album: AlbumRequestDTO, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
+        viewModelScope.launch {
+            try {
+                repository.createAlbums(album)
+                onSuccess()
+            } catch (e: Exception) {
+                onError(e)
             }
         }
     }

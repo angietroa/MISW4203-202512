@@ -1,7 +1,6 @@
 package com.uniandes.vinilos.data.repository
 
-import com.uniandes.vinilos.data.model.Album
-import com.uniandes.vinilos.data.dto.AlbumRequestDTO
+import com.uniandes.vinilos.data.model.Artist
 import com.uniandes.vinilos.data.adapters.RetrofitClient
 import com.uniandes.vinilos.data.cache.CacheEntry
 import kotlinx.coroutines.Dispatchers
@@ -12,20 +11,20 @@ import java.util.concurrent.TimeUnit
 import java.util.WeakHashMap
 
 /**
- * Repositorio para gestionar álbumes con optimizaciones de memoria.
+ * Repositorio para gestionar artistas con optimizaciones de memoria.
  * Utiliza WeakHashMap para permitir que las entradas de caché sean liberadas
  * cuando hay presión de memoria.
  */
-class AlbumRepository {
+class ArtistRepository {
     private val apiService = RetrofitClient.apiService
     
-    // Caché para la lista de álbumes
-    private val albumsCache = CacheEntry<List<Album>>(null)
+    // Caché para la lista de artistas
+    private val artistsCache = CacheEntry<List<Artist>>(null)
     
-    // Caché para álbumes individuales por ID usando WeakHashMap
+    // Caché para artistas individuales por ID usando WeakHashMap
     // Esto permite que las entradas sean liberadas cuando hay presión de memoria
     // y no son fuertemente referenciadas en otro lugar
-    private val albumByIdCache = WeakHashMap<Int, CacheEntry<Album>>()
+    private val artistByIdCache = WeakHashMap<Int, CacheEntry<Artist>>()
     
     // Mutex para operaciones de escritura seguras en la caché
     private val cacheMutex = Mutex()
@@ -33,52 +32,41 @@ class AlbumRepository {
     // Tiempo de vida de caché (en milisegundos)
     private val cacheLifetime = TimeUnit.SECONDS.toMillis(5)
     
-    suspend fun getAlbums(): List<Album> = withContext(Dispatchers.IO) {
+    suspend fun getArtists(): List<Artist> = withContext(Dispatchers.IO) {
         // Verificamos si hay datos en caché y si son válidos
-        if (albumsCache.data != null && !albumsCache.isExpired(cacheLifetime)) {
-            return@withContext albumsCache.data!!
+        if (artistsCache.data != null && !artistsCache.isExpired(cacheLifetime)) {
+            return@withContext artistsCache.data!!
         }
-
+        
         // Si no hay datos en caché o han expirado, hacemos la llamada a la API
-        val freshData = apiService.getAlbums()
+        val freshData = apiService.getArtists()
         
         // Actualizamos la caché de manera segura con los nuevos datos
         cacheMutex.withLock {
-            albumsCache.update(freshData)
+            artistsCache.update(freshData)
         }
         
         return@withContext freshData
     }
 
-    suspend fun getAlbumById(albumId: Int): Album = withContext(Dispatchers.IO) {
-        // Verificamos si hay datos en caché para este álbum y si son válidos
-        val cacheEntry = albumByIdCache[albumId]
+    suspend fun getArtistById(artistId: Int): Artist = withContext(Dispatchers.IO) {
+        // Verificamos si hay datos en caché para este artista y si son válidos
+        val cacheEntry = artistByIdCache[artistId]
         if (cacheEntry?.data != null && !cacheEntry.isExpired(cacheLifetime)) {
             return@withContext cacheEntry.data!!
         }
         
         // Si no hay datos en caché o han expirado, hacemos la llamada a la API
-        val freshData = apiService.getAlbumById(albumId)
+        val freshData = apiService.getArtistById(artistId)
         
         // Actualizamos la caché de manera segura con los nuevos datos
         cacheMutex.withLock {
-            if (albumByIdCache[albumId] == null) {
-                albumByIdCache[albumId] = CacheEntry(null)
+            if (artistByIdCache[artistId] == null) {
+                artistByIdCache[artistId] = CacheEntry(null)
             }
-            albumByIdCache[albumId]?.update(freshData)
+            artistByIdCache[artistId]?.update(freshData)
         }
         
         return@withContext freshData
-    }
-
-    suspend fun createAlbums(album: AlbumRequestDTO): Album {
-        val result = apiService.createAlbums(album)
-        
-        // Invalidamos la caché de álbumes para que se recargue en la próxima solicitud
-        cacheMutex.withLock {
-            albumsCache.invalidate()
-        }
-        
-        return result
     }
 }

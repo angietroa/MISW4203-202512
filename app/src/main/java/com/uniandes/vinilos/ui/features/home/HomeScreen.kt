@@ -18,40 +18,25 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.uniandes.vinilos.R
-import com.uniandes.vinilos.data.model.Artist
 import com.uniandes.vinilos.ui.components.MainAlbum
 import com.uniandes.vinilos.ui.components.MainArtist
 import com.uniandes.vinilos.ui.components.SectionHeader
 import com.uniandes.vinilos.viewmodel.AlbumViewModel
+import com.uniandes.vinilos.viewmodel.ArtistViewModel
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    albumViewModel: AlbumViewModel = viewModel()
+    albumViewModel: AlbumViewModel = viewModel(),
+    artistViewModel: ArtistViewModel = viewModel()
 ) {
     val albumState by albumViewModel.albumState.collectAsState()
+    val artistState by artistViewModel.artistState.collectAsState()
 
     LaunchedEffect(key1 = true) {
         albumViewModel.loadAlbums()
+        artistViewModel.loadArtists()
     }
-
-    val artists = listOf(
-        Artist(
-            id = "1",
-            image = "https://radionacional-v3.s3.amazonaws.com/s3fs-public/styles/portadas_relaciona_4_3/public/senalradio/articulo-noticia/galeriaimagen/lospetitfellas_2020_5.jpg?h=34515be3&itok=kwWtG-VK",
-            name = "Los Petit Fellas",
-        ),
-        Artist(
-            id = "2",
-            image = "https://s2.abcstatics.com/abc/www/multimedia/gente/2024/01/17/ariana-grande-kVxG-U601140978351bzB-1200x840@abc.jpg",
-            name = "Ariana Grande",
-        ),
-        Artist(
-            id = "3",
-            image = "https://i.scdn.co/image/ab6761610000e5eb330d24db775125dcec2c7b4c",
-            name = "Juanes"
-        )
-    )
 
     Column(
         modifier = Modifier
@@ -120,17 +105,35 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(artists) { artist ->
-                    MainArtist(
-                        cover = artist.image,
-                        title = artist.name,
-                        onClick = {
-                            navController.navigate("artist_detail/${artist.id}?origin=home_screen")
-                        }
+            when {
+                artistState.isLoading -> {
+                    CircularProgressIndicator()
+                }
+                artistState.error != null -> {
+                    Text(
+                        text = "Error: ${artistState.error}",
+                        color = MaterialTheme.colorScheme.error
                     )
+                }
+                artistState.artists.isNotEmpty() -> {
+                    LazyRow(
+                        modifier = Modifier.testTag("artist_list"),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(artistState.artists.take(3)) { artist ->
+                            MainArtist(
+                                modifier = Modifier.testTag("artist_item"),
+                                cover = artist.image,
+                                title = artist.name,
+                                onClick = {
+                                    navController.navigate("artist_detail/${artist.id}?origin=home_screen")
+                                }
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    Text(text = "No hay artistas disponibles")
                 }
             }
         }

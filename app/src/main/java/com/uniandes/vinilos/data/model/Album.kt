@@ -1,5 +1,6 @@
 package com.uniandes.vinilos.data.model
 
+@Suppress("unused")
 data class Album(
     val id: String,
     val name: String,
@@ -11,6 +12,4 @@ data class Album(
     val performers: List<Artist> = emptyList(),
     val tracks: List<Track> = emptyList(),
     val comments: List<Comment> = emptyList(),
-    // NOTE: Remove!
-    var artist: String
 )

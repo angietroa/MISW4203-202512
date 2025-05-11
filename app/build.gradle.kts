@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp.logging)
+    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2")
 
     // Desugar (para usar APIs más modernas en minSdk 21)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.9")
@@ -83,6 +84,7 @@ dependencies {
     // Instrumented Tests
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.javafaker)
 
     // Jetpack Compose UI Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
