@@ -28,7 +28,9 @@ fun MainArtist(
     val painter = rememberAsyncImagePainter(model = cover)
 
     Column(
-        modifier = modifier.clickable { onClick() },
+        modifier = modifier
+            .width(114.dp)
+            .clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -49,7 +51,8 @@ fun MainArtist(
             color = MaterialTheme.colorScheme.secondary,
             textAlign = TextAlign.Center,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

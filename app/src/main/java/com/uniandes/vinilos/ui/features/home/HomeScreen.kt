@@ -117,8 +117,10 @@ fun HomeScreen(
                 }
                 artistState.artists.isNotEmpty() -> {
                     LazyRow(
-                        modifier = Modifier.testTag("artist_list"),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("artist_list"),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)
                     ) {
                         items(artistState.artists.take(3)) { artist ->
                             MainArtist(
