@@ -1,98 +1,59 @@
 package com.uniandes.vinilos.ui.components
 
-import androidx.compose.material3.Card
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
-fun MainCollector(
-    cover: String,
+fun MainCollector (
+    modifier: Modifier,
     name: String,
-    albumCount: String,
+    cover: String,
     onClick: () -> Unit,
 ) {
     val painter = rememberAsyncImagePainter(model = cover)
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp)
+    Column(
+        modifier = modifier
+            .clickable { onClick() }
+            .width(114.dp)
+            .height(180.dp),
+        horizontalAlignment = Alignment.Start
     ) {
-        Column {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-            ) {
-                Image(
-                    painter = painter,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
+        Image(
+            painter = painter,
+            contentDescription = null,
+            modifier = Modifier
+                .size(110.dp, 150.dp),
+            contentScale = ContentScale.Crop
+        )
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                colorStops = arrayOf(
-                                    0.5f to Color.Black.copy(alpha = 0f),
-                                    1.0f to Color.Black.copy(alpha = 1f)
-                                )
-                            )
-                        )
-                )
-            }
+        Spacer(modifier = Modifier.height(5.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Black)
-                    .padding(4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = albumCount,
-                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 14.sp),
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = name,
-                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
-                        color = MaterialTheme.colorScheme.tertiary
-                    )
-                }
-
-                Button(
-                    onClick = { onClick() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF059BFF).copy(alpha = 0.4f),
-                        contentColor = MaterialTheme.colorScheme.tertiary
-                    ),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
-                ) {
-                    Text(text = "Agregar")
-                }
-            }
-        }
+        Text(
+            text = name,
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.secondary,
+            textAlign = TextAlign.Left,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
-
