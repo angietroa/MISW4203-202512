@@ -186,10 +186,7 @@ fun HomeScreen(
                     MainCollector(
                         modifier = Modifier.testTag("collector_item"),
                         name = collector.name,
-                        cover = collector.cover,
-                        onClick = {
-                            navController.navigate("collector_detail/${collector.id}?origin=home_screen")
-                        }
+                        cover = collector.cover
                     )
                 }
             }

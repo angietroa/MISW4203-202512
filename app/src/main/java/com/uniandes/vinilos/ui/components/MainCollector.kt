@@ -1,7 +1,6 @@
 package com.uniandes.vinilos.ui.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,14 +23,12 @@ import coil.compose.rememberAsyncImagePainter
 fun MainCollector (
     modifier: Modifier,
     name: String,
-    cover: String,
-    onClick: () -> Unit,
+    cover: String
 ) {
     val painter = rememberAsyncImagePainter(model = cover)
 
     Column(
         modifier = modifier
-            .clickable { onClick() }
             .width(114.dp)
             .height(180.dp),
         horizontalAlignment = Alignment.Start
