@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.uniandes.vinilos.data.model.Collector
 import com.uniandes.vinilos.ui.components.LogoHeader
-import com.uniandes.vinilos.ui.components.MainCollector
+import com.uniandes.vinilos.ui.components.SecondaryCollector
 
 @Composable
 fun CollectorScreen(navController: NavHostController) {
@@ -63,7 +63,7 @@ fun CollectorScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(collectors) { collector ->
-                    MainCollector(
+                    SecondaryCollector (
                         cover = collector.cover,
                         name = collector.name,
                         albumCount = collector.albumCount,
