@@ -1,5 +1,6 @@
 package com.uniandes.vinilos.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -7,27 +8,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomDropdown(
+fun <T> CustomDropdown(
     label: String,
-    options: List<String>,
-    selectedOption: String,
-    onOptionSelected: (String) -> Unit,
-    modifier: Modifier,
+    options: List<T>,
+    selectedOption: T,
+    onOptionSelected: (T) -> Unit,
+    optionLabel: (T) -> String
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Column (
-        modifier = modifier.fillMaxWidth()
+    Column(
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(
             text = label,
             color = MaterialTheme.colorScheme.secondary,
-            fontSize = 16.sp
+            fontSize = 16.sp,
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -37,7 +39,7 @@ fun CustomDropdown(
             onExpandedChange = { expanded = !expanded }
         ) {
             OutlinedTextField(
-                value = selectedOption,
+                value = optionLabel(selectedOption),
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = {
@@ -64,11 +66,18 @@ fun CustomDropdown(
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF2C2C2C))
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(
-                        text = { Text(option) },
+                        text = {
+                            Text(
+                                text = optionLabel(option),
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                        },
                         onClick = {
                             onOptionSelected(option)
                             expanded = false
