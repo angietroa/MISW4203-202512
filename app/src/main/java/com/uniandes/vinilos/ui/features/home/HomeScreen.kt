@@ -27,41 +27,24 @@ import com.uniandes.vinilos.ui.components.MainCollector
 import com.uniandes.vinilos.ui.components.SectionHeader
 import com.uniandes.vinilos.viewmodel.AlbumViewModel
 import com.uniandes.vinilos.viewmodel.ArtistViewModel
+import com.uniandes.vinilos.viewmodel.CollectorViewModel
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     albumViewModel: AlbumViewModel = viewModel(),
-    artistViewModel: ArtistViewModel = viewModel()
+    artistViewModel: ArtistViewModel = viewModel(),
+    collectorViewModel: CollectorViewModel = viewModel()
 ) {
     val scrollState = rememberScrollState()
     val albumState by albumViewModel.albumState.collectAsState()
     val artistState by artistViewModel.artistState.collectAsState()
-
-    val collectors = mutableListOf(
-        Collector(
-            id = "1",
-            cover = "https://wallpapers.com/images/hd/neon-purple-4k-z32z5va3r8itqjvq.jpg",
-            name = "Colección de prueba",
-            albumCount = "5 Álbumes",
-        ),
-        Collector(
-            id = "2",
-            cover = "https://img.freepik.com/vector-gratis/fondo-luces-neon-realista_23-2148918046.jpg?semt=ais_hybrid&w=740",
-            name = "Colección 2",
-            albumCount = "5 Álbumes",
-        ),
-        Collector(
-            id = "3",
-            cover = "https://img.freepik.com/foto-gratis/fondo-neon-colorido-brillante_23-2150689404.jpg?semt=ais_hybrid&w=740",
-            name = "Colección 3",
-            albumCount = "5 Álbumes",
-        )
-    )
+    val collectorState by collectorViewModel.collectorState.collectAsState()
 
     LaunchedEffect(key1 = true) {
         albumViewModel.loadAlbums()
         artistViewModel.loadArtists()
+        collectorViewModel.loadCollectors()
     }
 
     Column(
@@ -175,19 +158,33 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("collector_list"),
-                horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.Start)
-            ) {
-                items(collectors.take(3)) { collector ->
-
-                    MainCollector(
-                        modifier = Modifier.testTag("collector_item"),
-                        name = collector.name,
-                        cover = collector.cover
+            when {
+                collectorState.isLoading -> {
+                    CircularProgressIndicator()
+                }
+                collectorState.error != null -> {
+                    Text(
+                        text = "Error: ${collectorState.error}",
+                        color = MaterialTheme.colorScheme.error
                     )
+                }
+                collectorState.collectors.isNotEmpty() -> {
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("collector_list"),
+                        horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.Start)
+                    ) {
+                        items(collectorState.collectors.take(3)) { collector ->
+                            MainCollector(
+                                modifier = Modifier.testTag("collector_item"),
+                                name = collector.name
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    Text(text = "No hay coleccionistas disponibles")
                 }
             }
         }

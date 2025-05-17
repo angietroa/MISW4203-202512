@@ -23,9 +23,8 @@ import coil.compose.rememberAsyncImagePainter
 fun MainCollector (
     modifier: Modifier,
     name: String,
-    cover: String
 ) {
-    val painter = rememberAsyncImagePainter(model = cover)
+    val painter = rememberAsyncImagePainter(model = "https://wallpapers.com/images/hd/neon-purple-4k-z32z5va3r8itqjvq.jpg")
 
     Column(
         modifier = modifier
