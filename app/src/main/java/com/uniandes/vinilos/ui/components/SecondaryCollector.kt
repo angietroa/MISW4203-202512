@@ -19,12 +19,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun SecondaryCollector(
-    cover: String,
     name: String,
     albumCount: String,
     onClick: () -> Unit,
 ) {
-    val painter = rememberAsyncImagePainter(model = cover)
+    val painter = rememberAsyncImagePainter(model = "https://wallpapers.com/images/hd/neon-purple-4k-z32z5va3r8itqjvq.jpg")
 
     Card(
         modifier = Modifier
