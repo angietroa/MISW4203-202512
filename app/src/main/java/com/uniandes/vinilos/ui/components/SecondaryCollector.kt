@@ -19,6 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun SecondaryCollector(
+    modifier: Modifier = Modifier,
+    buttonModifier: Modifier = Modifier,
     name: String,
     albumCount: String,
     onClick: () -> Unit,
@@ -81,6 +83,7 @@ fun SecondaryCollector(
 
                 Button(
                     onClick = { onClick() },
+                    modifier = buttonModifier,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF059BFF).copy(alpha = 0.4f),
                         contentColor = MaterialTheme.colorScheme.tertiary

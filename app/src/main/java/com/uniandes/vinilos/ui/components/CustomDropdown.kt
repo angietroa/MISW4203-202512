@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> CustomDropdown(
+    modifier: Modifier = Modifier,
     label: String,
     options: List<T>,
     selectedOption: T,
@@ -45,7 +46,7 @@ fun <T> CustomDropdown(
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded)
                 },
-                modifier = Modifier
+                modifier = modifier
                     .menuAnchor()
                     .fillMaxWidth(),
                 shape = MaterialTheme.shapes.medium,
