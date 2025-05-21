@@ -104,7 +104,7 @@ fun ArtistDetail(artistId: String, origin: String, navController: NavHostControl
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
                         color = MaterialTheme.colorScheme.secondary,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().testTag("artist_name")
                     )
 
                     Spacer(modifier = Modifier.height(18.dp))

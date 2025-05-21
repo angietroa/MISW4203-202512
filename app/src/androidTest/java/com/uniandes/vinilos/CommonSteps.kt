@@ -48,13 +48,6 @@ class CommonSteps {
             .performClick()
     }
 
-    fun clickOnText(composeTestRule: ComposeTestRule, text: String) {
-        composeTestRule
-            .onNodeWithText(text, substring = false)
-            .assertExists()
-            .assertIsDisplayed()
-            .performClick()
-    }
 
     fun validateListIsVisible(composeTestRule: ComposeTestRule, listTag: String) {
         waitUntil(composeTestRule, listTag)
@@ -145,4 +138,5 @@ class CommonSteps {
     fun selectDropdownOption(composeTestRule: ComposeTestRule, text: String) {
         composeTestRule.onNodeWithText(text).performClick()
     }
+
 }
