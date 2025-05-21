@@ -2,6 +2,8 @@ package com.uniandes.vinilos.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uniandes.vinilos.data.dto.AlbumRequestDTO
+import com.uniandes.vinilos.data.dto.ArtistRequestDTO
 import com.uniandes.vinilos.data.model.Artist
 import com.uniandes.vinilos.data.repository.ArtistRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,6 +68,17 @@ class ArtistViewModel: ViewModel(){
                         isLoading = false
                     )
                 }
+            }
+        }
+    }
+
+    fun createArtist(artist: ArtistRequestDTO, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
+        viewModelScope.launch {
+            try {
+                repository.createArtist(artist)
+                onSuccess()
+            } catch (e: Exception) {
+                onError(e)
             }
         }
     }
