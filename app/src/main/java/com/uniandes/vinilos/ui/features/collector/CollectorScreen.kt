@@ -66,6 +66,7 @@ fun CollectorScreen(navController: NavHostController, collectorViewModel: Collec
                 }
                 collectorState.collectors.isNotEmpty() -> {
                     LazyColumn(
+                        modifier = Modifier.testTag("collector_list"),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(collectorState.collectors) { collector ->

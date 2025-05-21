@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -30,7 +31,7 @@ data class Option(val label: String, val value: String)
 
 @Composable
 fun CollectorAdd(collectorId: String, navController: NavHostController) {
-    val viewModel: CollectorViewModel = viewModel()
+    val collectorViewModel: CollectorViewModel = viewModel()
     val context = LocalContext.current
     val albumViewModel: AlbumViewModel = viewModel()
     val albumState by albumViewModel.albumState.collectAsState()
@@ -78,7 +79,7 @@ fun CollectorAdd(collectorId: String, navController: NavHostController) {
             status = selectedStatus.value
         )
 
-        viewModel.createCollectoralbum(
+        collectorViewModel.createCollectoralbum(
             collectorId = collectorId,
             albumId = selectedAlbum!!.value,
             requestBody = requestBody,
@@ -150,6 +151,7 @@ fun CollectorAdd(collectorId: String, navController: NavHostController) {
         } else {
             selectedAlbum?.let { selected ->
                 CustomDropdown(
+                    modifier = Modifier.testTag("album_dropdown"),
                     label = "Álbum",
                     options = albumOptions,
                     selectedOption = selected,
@@ -159,6 +161,7 @@ fun CollectorAdd(collectorId: String, navController: NavHostController) {
             }
 
             CustomDropdown(
+                modifier = Modifier.testTag("status_dropdown"),
                 label = "Estado",
                 options = status,
                 selectedOption = selectedStatus,
@@ -171,7 +174,8 @@ fun CollectorAdd(collectorId: String, navController: NavHostController) {
                 placeholder = "Precio",
                 value = price,
                 onValueChange = { price = it },
-                keyboardType = KeyboardType.Number
+                keyboardType = KeyboardType.Number,
+                key = "precio"
             )
         }
 

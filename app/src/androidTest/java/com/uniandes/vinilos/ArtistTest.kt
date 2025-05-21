@@ -2,16 +2,22 @@ package com.uniandes.vinilos
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import com.github.javafaker.Faker
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.Locale
+import java.text.SimpleDateFormat
 
 @RunWith(AndroidJUnit4::class)
 class ArtistTest {
 
     @get:Rule val rule = createAndroidComposeRule<MainActivity>()
     private val commonSteps = CommonSteps()
+    private val faker = Faker(Locale.ENGLISH)
 
     @Before
     fun resetAppState() {
