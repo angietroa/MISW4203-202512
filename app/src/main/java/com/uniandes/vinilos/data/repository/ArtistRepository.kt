@@ -3,6 +3,7 @@ package com.uniandes.vinilos.data.repository
 import com.uniandes.vinilos.data.model.Artist
 import com.uniandes.vinilos.data.adapters.RetrofitClient
 import com.uniandes.vinilos.data.cache.CacheEntry
+import com.uniandes.vinilos.data.dto.ArtistRequestDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -68,5 +69,16 @@ class ArtistRepository {
         }
         
         return@withContext freshData
+    }
+
+    suspend fun createArtist(artist: ArtistRequestDTO): Artist {
+        val result = apiService.createArtist(artist)
+
+        // Invalidamos la caché de artistas para que se recargue en la próxima solicitud
+        cacheMutex.withLock {
+            artistsCache.invalidate()
+        }
+
+        return result
     }
 }

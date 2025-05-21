@@ -119,7 +119,14 @@ fun ArtistDetail(artistId: String, origin: String, navController: NavHostControl
                             date.format(formatter)
                         } ?: "N/A"
                     )
-                    DetailField("Álbumes", artist.albums.joinToString(", ") { it.name })
+                    DetailField(
+                        "Álbumes",
+                        if (artist.albums.isNullOrEmpty()) {
+                            "No hay información disponible"
+                        } else {
+                            artist.albums.joinToString(", ") { it.name }
+                        }
+                    )
                 }
             }
         }

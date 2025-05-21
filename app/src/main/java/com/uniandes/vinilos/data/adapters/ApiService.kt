@@ -4,6 +4,7 @@ import com.uniandes.vinilos.data.model.Album
 import com.uniandes.vinilos.data.model.Artist
 import com.uniandes.vinilos.data.dto.AlbumRequestDTO
 import com.uniandes.vinilos.data.dto.CollectorAlbumRequestDTO
+import com.uniandes.vinilos.data.dto.ArtistRequestDTO
 import com.uniandes.vinilos.data.model.Collector
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -39,4 +40,9 @@ interface ApiService {
         @Path("albumId") albumId: String,
         @Body requestBody: CollectorAlbumRequestDTO
     ): Collector
+
+    @POST("musicians")
+    suspend fun createArtist(
+        @Body requestBody: ArtistRequestDTO
+    ): Artist
 }
