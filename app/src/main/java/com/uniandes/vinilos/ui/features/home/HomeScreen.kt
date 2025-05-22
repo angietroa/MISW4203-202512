@@ -70,7 +70,12 @@ fun HomeScreen(
 
         //Albums list
         Spacer(modifier = Modifier.height(32.dp))
-        SectionHeader(title = "Álbumes", route = "album_screen", navController = navController, tag = "show_more_album")
+        SectionHeader(
+            title = "Álbumes",
+            route = "album_screen",
+            navController = navController,
+            tag = "show_more_album"
+        )
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -79,12 +84,14 @@ fun HomeScreen(
                 albumState.isLoading -> {
                     CircularProgressIndicator()
                 }
+
                 albumState.error != null -> {
                     Text(
                         text = "Error: ${albumState.error}",
                         color = MaterialTheme.colorScheme.error
                     )
                 }
+
                 albumState.albums.isNotEmpty() -> {
                     LazyRow(
                         modifier = Modifier.testTag("album_list"),
@@ -103,6 +110,7 @@ fun HomeScreen(
                         }
                     }
                 }
+
                 else -> {
                     Text(text = "No hay álbumes disponibles")
                 }
@@ -111,7 +119,12 @@ fun HomeScreen(
 
         //Artists list
         Spacer(modifier = Modifier.height(36.dp))
-        SectionHeader(title = "Artistas", route = "artist_screen", navController = navController, tag = "show_more_artist")
+        SectionHeader(
+            title = "Artistas",
+            route = "artist_screen",
+            navController = navController,
+            tag = "show_more_artist"
+        )
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -120,12 +133,14 @@ fun HomeScreen(
                 artistState.isLoading -> {
                     CircularProgressIndicator()
                 }
+
                 artistState.error != null -> {
                     Text(
                         text = "Error: ${artistState.error}",
                         color = MaterialTheme.colorScheme.error
                     )
                 }
+
                 artistState.artists.isNotEmpty() -> {
                     LazyRow(
                         modifier = Modifier
@@ -145,6 +160,7 @@ fun HomeScreen(
                         }
                     }
                 }
+
                 else -> {
                     Text(text = "No hay artistas disponibles")
                 }
@@ -153,7 +169,12 @@ fun HomeScreen(
 
         //Collectors list
         Spacer(modifier = Modifier.height(36.dp))
-        SectionHeader(title = "Coleccionistas", route = "collector_screen", navController = navController, tag = "show_more_collector")
+        SectionHeader(
+            title = "Coleccionistas",
+            route = "collector_screen",
+            navController = navController,
+            tag = "show_more_collector"
+        )
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -162,12 +183,14 @@ fun HomeScreen(
                 collectorState.isLoading -> {
                     CircularProgressIndicator()
                 }
+
                 collectorState.error != null -> {
                     Text(
                         text = "Error: ${collectorState.error}",
                         color = MaterialTheme.colorScheme.error
                     )
                 }
+
                 collectorState.collectors.isNotEmpty() -> {
                     LazyRow(
                         modifier = Modifier
@@ -183,6 +206,7 @@ fun HomeScreen(
                         }
                     }
                 }
+
                 else -> {
                     Text(text = "No hay coleccionistas disponibles")
                 }

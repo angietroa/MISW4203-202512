@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun CustomInput(
@@ -28,7 +30,8 @@ fun CustomInput(
     showError: Boolean = false,
     key: String = ""
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxWidth())
+    {
         Text(
             text = label,
             color = MaterialTheme.colorScheme.secondary,
@@ -45,7 +48,10 @@ fun CustomInput(
                 .fillMaxWidth()
                 .background(Color.Black)
                 .height(48.dp)
-                .testTag("input_${key.lowercase()}"),
+                .testTag("input_${key.lowercase()}")
+                .semantics {
+                    contentDescription = "Campo para $label"
+                },
             colors = TextFieldDefaults.colors(
                 focusedTextColor = MaterialTheme.colorScheme.secondary,
                 unfocusedTextColor = MaterialTheme.colorScheme.secondary,

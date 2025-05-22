@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -104,7 +106,7 @@ fun ArtistDetail(artistId: String, origin: String, navController: NavHostControl
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
                         color = MaterialTheme.colorScheme.secondary,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth().testTag("artist_name")
+                        modifier = Modifier.fillMaxWidth().testTag("artist_name").semantics { contentDescription = artist.name }
                     )
 
                     Spacer(modifier = Modifier.height(18.dp))

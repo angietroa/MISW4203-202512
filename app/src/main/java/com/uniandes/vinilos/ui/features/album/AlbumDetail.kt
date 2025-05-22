@@ -136,7 +136,7 @@ fun AlbumDetailContent(album: Album, origin: String, navController: NavHostContr
                     Button(
                         onClick = { navController.navigate("album_create") },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF059BFF).copy(alpha = 0.4f),
+                            containerColor = Color(0xFF059BFF).copy(alpha = 0.1f),
                             contentColor = MaterialTheme.colorScheme.tertiary
                         ),
                         border = BorderStroke(1.dp, Color(0xFF059BFF).copy(alpha = 0.4f)),
