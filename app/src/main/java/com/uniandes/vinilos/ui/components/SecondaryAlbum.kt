@@ -20,7 +20,9 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import java.lang.ref.WeakReference
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+
 
 /**
  * Componente de álbum secundario optimizado con WeakReference para la caché de imágenes.
@@ -56,6 +58,9 @@ fun SecondaryAlbum(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
+            .semantics {
+                contentDescription = "$title, $subtitle"
+            }
     ) {
         Row(
             modifier = Modifier

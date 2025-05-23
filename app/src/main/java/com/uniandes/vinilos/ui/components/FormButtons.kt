@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun FormButtons(
@@ -49,25 +51,26 @@ fun FormButtons(
             Button(
                 onClick = { navController.navigate(routeBack) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFA1A1A1).copy(alpha = 0.4f),
+                    containerColor = Color(0xFFA1A1A1).copy(alpha = 0.1f),
                     contentColor = Color(0xFFA1A1A1)
                 ),
                 border = BorderStroke(1.dp, Color(0xFFA1A1A1)),
                 modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 1.dp)
             ) {
                 Text(text = "Cancelar")
             }
             Button(
                 onClick = onClickCreate,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF059BFF).copy(alpha = 0.4f),
+                    containerColor = Color(0xFF059BFF).copy(alpha = 0.1f),
                     contentColor = MaterialTheme.colorScheme.tertiary
                 ),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
                 modifier = Modifier
                     .testTag("create_button")
-                    .then(Modifier.weight(1f)),
+                    .then(Modifier.weight(1f))
+                    .semantics { contentDescription = buttonText },
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
             ) {
                 Text(text = buttonText)

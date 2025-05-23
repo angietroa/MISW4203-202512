@@ -10,6 +10,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.navigation.NavHostController
 
 @Composable
@@ -31,11 +33,13 @@ fun SectionHeader(
             color = MaterialTheme.colorScheme.primary
         )
 
-        val (buttonText, buttonColors) = getButtonConfig(isList)
+        val (buttonText, buttonColors, contentDesc) = getButtonConfig(isList, title)
 
         Button(
             onClick = { navController.navigate(route) },
-            modifier = Modifier.testTag(tag),
+            modifier = Modifier
+                .testTag(tag)
+                .semantics { contentDescription = contentDesc },
             colors = buttonColors,
             border = BorderStroke(1.dp, buttonColors.containerColor),
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 0.dp)
@@ -47,15 +51,17 @@ fun SectionHeader(
 }
 
 @Composable
-fun getButtonConfig(isList: Boolean): Pair<String, ButtonColors> {
+fun getButtonConfig(isList: Boolean, title: String): Triple<String, ButtonColors, String> {
     val buttonText = if (isList) "Crear" else "Ver más"
-    val containerColor = if (isList) Color(0xFF059BFF).copy(alpha = 0.4f) else Color.Transparent
+    val containerColor = if (isList) Color(0xFF059BFF).copy(alpha = 0.1f) else Color.Transparent
     val contentColor = if (isList) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondary
+    val contentDesc = if (isList) "Crear $title" else "Ver más sobre $title"
+
 
     val buttonColors = ButtonDefaults.buttonColors(
         containerColor = containerColor,
-        contentColor = contentColor
+        contentColor = contentColor,
     )
 
-    return buttonText to buttonColors
+    return Triple(buttonText, buttonColors, contentDesc)
 }

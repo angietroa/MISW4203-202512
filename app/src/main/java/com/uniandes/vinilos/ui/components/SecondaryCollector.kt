@@ -16,6 +16,13 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+
+val InvisibleToUserKey = SemanticsPropertyKey<Boolean>("invisibleToUser")
+var SemanticsPropertyReceiver.invisibleToUser by InvisibleToUserKey
 
 @Composable
 fun SecondaryCollector(
@@ -29,7 +36,10 @@ fun SecondaryCollector(
 
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .semantics {
+                contentDescription = "Coleccionista $name con $albumCount álbumes"
+            },
         shape = RoundedCornerShape(8.dp)
     ) {
         Column {
@@ -67,25 +77,38 @@ fun SecondaryCollector(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                Column (
+                    modifier = Modifier.semantics(mergeDescendants = true) {
+                        contentDescription = "$name con $albumCount álbumes"
+                    }
+                )
+                {
                     Text(
                         text = albumCount,
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 14.sp),
-                        color = MaterialTheme.colorScheme.secondary
+                        color = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.semantics {
+                            invisibleToUser = true
+                        }
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = name,
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
-                        color = MaterialTheme.colorScheme.tertiary
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.semantics {
+                            contentDescription = name
+                        }
                     )
                 }
 
                 Button(
                     onClick = { onClick() },
-                    modifier = buttonModifier,
+                    modifier = buttonModifier.semantics {
+                        contentDescription = "Agregar a la colección de $name con $albumCount álbumes"
+                    },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF059BFF).copy(alpha = 0.4f),
+                        containerColor = Color(0xFF059BFF).copy(alpha = 0.1f),
                         contentColor = MaterialTheme.colorScheme.tertiary
                     ),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
