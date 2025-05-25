@@ -26,14 +26,16 @@ fun MainAlbum(
     val painter = rememberAsyncImagePainter(model = cover)
 
     Column(
-        modifier = modifier.clickable { onClick() }.width(114.dp).height(180.dp),
+        modifier = modifier
+            .width(114.dp)
+            .height(180.dp)
+            .clickable { onClick() },
         horizontalAlignment = Alignment.Start
     ) {
         Image(
             painter = painter,
             contentDescription = null,
-            modifier = Modifier
-                .size(110.dp),
+            modifier = Modifier.size(110.dp),
             contentScale = ContentScale.Crop
         )
 
@@ -45,7 +47,8 @@ fun MainAlbum(
             color = MaterialTheme.colorScheme.secondary,
             textAlign = TextAlign.Left,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
         )
 
         Text(
@@ -54,7 +57,8 @@ fun MainAlbum(
             color = MaterialTheme.colorScheme.tertiary,
             textAlign = TextAlign.Left,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

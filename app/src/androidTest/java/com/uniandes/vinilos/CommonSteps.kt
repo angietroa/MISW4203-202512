@@ -8,10 +8,11 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
-import junit.framework.TestCase.assertTrue
+import org.junit.Assert.assertTrue
 
 
 class CommonSteps {
@@ -46,6 +47,7 @@ class CommonSteps {
             .assertIsDisplayed()
             .performClick()
     }
+
 
     fun validateListIsVisible(composeTestRule: ComposeTestRule, listTag: String) {
         waitUntil(composeTestRule, listTag)
@@ -104,6 +106,37 @@ class CommonSteps {
                 val texts = node.config.getOrElse(SemanticsProperties.Text) { emptyList() }
                 texts.any { it.text.contains(text) }
             }
+    }
+
+    fun countItemsAtLeast(composeTestRule: ComposeTestRule, itemTag: String, expectedCount: Int) {
+        val items = composeTestRule
+            .onAllNodesWithTag(itemTag)
+            .fetchSemanticsNodes()
+
+        assertTrue(
+            "Se esperaban al menos $expectedCount elementos con tag '$itemTag', pero se encontraron ${items.size}",
+            items.size >= expectedCount
+        )
+    }
+
+    fun clickFirstButtonWithText(composeTestRule: ComposeTestRule, buttonText: String) {
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onAllNodes(hasText(buttonText)).fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeTestRule
+            .onAllNodes(hasText(buttonText))
+            .onFirst()
+            .assertIsDisplayed()
+            .performClick()
+    }
+
+    fun assertNodeWithTagIsNotVisible(composeTestRule: ComposeTestRule, tag: String) {
+        composeTestRule.onNodeWithTag(tag).assertDoesNotExist()
+    }
+
+    fun selectDropdownOption(composeTestRule: ComposeTestRule, text: String) {
+        composeTestRule.onNodeWithText(text).performClick()
     }
 
 }

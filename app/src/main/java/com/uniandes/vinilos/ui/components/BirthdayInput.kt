@@ -11,27 +11,25 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
-fun CustomInput(
-    label: String,
-    placeholder: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    keyboardType: KeyboardType = KeyboardType.Text,
+fun BirthdayInput(
+    label: String = "Cumpleaños",
+    placeholder: String = "DD-MM-YYYY",
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
     showError: Boolean = false,
-    key: String = ""
+    key: String = "birthday"
 ) {
-    Column(modifier = Modifier.fillMaxWidth())
-    {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = label,
             color = MaterialTheme.colorScheme.secondary,
@@ -42,16 +40,39 @@ fun CustomInput(
 
         OutlinedTextField(
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = { newValue ->
+                val digits = newValue.text.filter { it.isDigit() }.take(8)
+                val formatted = StringBuilder()
+                var cursorPosition = newValue.selection.start
+                var dashCount = 0
+
+                for (i in digits.indices) {
+                    formatted.append(digits[i])
+                    if ((i == 1 || i == 3) && i != digits.lastIndex) {
+                        formatted.append("-")
+                        if (newValue.selection.start > i + dashCount) {
+                            cursorPosition++
+                        }
+                        dashCount++
+                    }
+                }
+
+                val finalText = formatted.toString()
+                val newCursorPosition = cursorPosition.coerceAtMost(finalText.length)
+
+                onValueChange(
+                    TextFieldValue(
+                        text = finalText,
+                        selection = TextRange(newCursorPosition)
+                    )
+                )
+            },
             placeholder = { Text(placeholder) },
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.Black)
                 .height(48.dp)
-                .testTag("input_${key.lowercase()}")
-                .semantics {
-                    contentDescription = "Campo para $label"
-                },
+                .testTag("input_${key.lowercase()}"),
             colors = TextFieldDefaults.colors(
                 focusedTextColor = MaterialTheme.colorScheme.secondary,
                 unfocusedTextColor = MaterialTheme.colorScheme.secondary,
@@ -63,7 +84,7 @@ fun CustomInput(
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary,
                 cursorColor = MaterialTheme.colorScheme.secondary
             ),
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
         )
 
         if (showError) {

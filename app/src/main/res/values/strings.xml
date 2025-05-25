@@ -1,6 +1,10 @@
 <resources>
     <string name="genre_validation_error">The genre must be one of: Classical, Salsa, Rock, or Folk.</string>
     <string name="record_label_validation_error">The record label must be one of: Sony Music, EMI, Discos Fuentes, Elektra, Fania Records.</string>
+    <string name="status_validation_error">The status must be one Active or Inactive.</string>
+    <string name="album_prevalidation_error">Album must not be empty.</string>
+    <string name="price_prevalidation_error">Price must not be empty.</string>
+    <string name="price_nonumber_error">Price must be a valid number.</string>
     <string name="unknown_error">Unknown error</string>
     <string name="app_name" translatable="false">Vinilos</string>
 </resources>

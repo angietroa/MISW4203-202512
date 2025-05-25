@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="genre_validation_error">El campo &quot;género&quot; debe ser uno de los siguientes: Classical, Salsa, Rock o Folk.</string>
+    <string name="status_validation_error">El campo Estado debe ser Activo o Inactivo.</string>
+    <string name="album_prevalidation_error">El campo Álbum no debe estar vacio.</string>
+    <string name="price_prevalidation_error">El campo Precio no debe estar vacio.</string>
+    <string name="price_nonumber_error">El campo Precio debe ser un número entero.</string>
     <string name="record_label_validation_error">El sello debe ser: Sony Music, EMI, Discos Fuentes, Elektra o Fania Records.</string>
     <string name="unknown_error">Error desconocido</string>
 </resources>
